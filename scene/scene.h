@@ -9,7 +9,8 @@ typedef enum SceneType
     Menu_L = 0,
     Stage_L,
     Set_L,
-    GameScene_L
+    GameScene_L,
+    New_Level1_0_L
 } SceneType;
 
 /*

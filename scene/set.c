@@ -125,6 +125,24 @@ void set_destroy(Scene *self)
             al_destroy_bitmap(Obj->back_btn->img[i]);
             Obj->back_btn->img[i] = NULL;
         }
+        if(Obj->vol1_btn->img[i]){
+            al_destroy_bitmap(Obj->vol1_btn->img[i]);
+            Obj->vol1_btn->img[i] = NULL;
+        }
+        if(Obj->vol2_btn->img[i]){
+            al_destroy_bitmap(Obj->vol2_btn->img[i]);
+            Obj->vol2_btn->img[i] = NULL;
+        }
+    }
+    for(int i = 0; i < 3; i++){
+        if(Obj->bgm1_btn->img[1]){
+            al_destroy_bitmap(Obj->bgm1_btn->img[i]);
+            Obj->bgm1_btn->img[i] = NULL;
+        }
+        if(Obj->bgm2_btn->img[1]){
+            al_destroy_bitmap(Obj->bgm2_btn->img[i]);
+            Obj->bgm2_btn->img[i] = NULL;
+        }
     }
     
     // Free button object
