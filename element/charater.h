@@ -24,7 +24,7 @@ typedef struct _Character
     int width, height;              // the width and height of image
     bool dir;                       // true: face to right, false: face to left
     int state;                      // the state of character
-    ALLEGRO_BITMAP *img; // gif for each state. 0: stop, 1: move, 2:attack
+    ALLEGRO_BITMAP *img[2]; // gif for each state. 0: stop, 1: move, 2:attack
     ALLEGRO_SAMPLE_INSTANCE *atk_Sound;
     int anime;      // counting the time of animation
     int anime_time; // indicate how long the animation
@@ -34,6 +34,8 @@ typedef struct _Character
     float gravity;         // 重力加速度
     float jump_force;      // 跳躍力度
     bool is_jumping;       // 是否正在跳躍
+    int chara_cnt;
+    int change; 
 } Character;
 Elements *New_Character(int label);
 void _Character_update_position(Elements *self, int dx, int dy);

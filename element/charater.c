@@ -23,9 +23,12 @@ Elements *New_Character(int label)
     Elements *pObj = New_Elements(label);
 
     // load character image
-    pDerivedObj->img = al_load_bitmap("assets/image/player.png");
-    pDerivedObj->width = al_get_bitmap_width(pDerivedObj->img);
-    pDerivedObj->height = al_get_bitmap_height(pDerivedObj->img);
+    pDerivedObj->img[0] = al_load_bitmap("assets/image/player.png");
+    pDerivedObj->img[1] = al_load_bitmap("assets/image/jump.png");
+    pDerivedObj->width = 64;
+    pDerivedObj->height = 112;
+    pDerivedObj->chara_cnt = 0;
+    pDerivedObj->change = 0;
 
     // load attack sound
     ALLEGRO_SAMPLE *sample = al_load_sample("assets/sound/atk_sound.wav");
@@ -69,10 +72,12 @@ void Character_update(Elements *self)
 
     if (chara->state == STOP)
     {
+        chara->chara_cnt = 0;
         if ((key_state[key_used[2]] || key_state[ALLEGRO_KEY_W]) && !chara->is_jumping)
         {
             chara->velocity_y = chara->jump_force;
             chara->is_jumping = true;
+            chara->change = 2;
         }
 
         if (key_state[key_used[0]] || key_state[ALLEGRO_KEY_A]) // left
@@ -89,17 +94,44 @@ void Character_update(Elements *self)
     else if (chara->state == MOVE)
     {
         int move_step = 5;
+        if(chara->chara_cnt < 15)   
+            chara->chara_cnt++;
+        else
+            chara->chara_cnt = 0;
+
+        if ((key_state[key_used[2]] || key_state[ALLEGRO_KEY_W]) && !chara->is_jumping)
+        {
+            chara->velocity_y = chara->jump_force;
+            chara->is_jumping = true;
+            chara->state = MOVE;
+        }
         if (key_state[key_used[0]] || key_state[ALLEGRO_KEY_A]) // left
         {
             chara->dir = false;
             chara->x -= move_step;
+            chara->state = MOVE;
+            if(chara->chara_cnt >= 15) {
+                chara->change = !chara->change;
+                chara->chara_cnt = 0;
+            }
         }
         else if (key_state[key_used[1]] || key_state[ALLEGRO_KEY_D]) // right
         {
             chara->dir = true;
             chara->x += move_step;
+            chara->state = MOVE;
+            if(chara->chara_cnt >= 15) {
+                chara->change = !chara->change;
+                chara->chara_cnt = 0;
+            }
         }
-        chara->state = STOP;
+        if(!(key_state[key_used[0]] || key_state[ALLEGRO_KEY_A]) && 
+           !(key_state[key_used[1]] || key_state[ALLEGRO_KEY_D]) &&
+           !(key_state[key_used[2]] || key_state[ALLEGRO_KEY_W])) {
+            chara->state = STOP;
+            chara->chara_cnt = 0;
+            chara->change = 0;
+        }
     }
     if(chara->x < 0)
         chara->x = 0;
@@ -108,6 +140,7 @@ void Character_update(Elements *self)
     // 處理跳躍 & 重力
     chara->velocity_y += chara->gravity;
     chara->y += chara->velocity_y;
+
 
     for (int i = 0; i < 7; i++) {
         int px = platform_check[i][0];  // 平台 x
@@ -123,6 +156,7 @@ void Character_update(Elements *self)
             chara->y = py - chara->height;   // 放在平台上
             chara->is_jumping = false;       // 停止跳躍
             chara->velocity_y = 0;           // 垂直速度歸零
+            chara->change = 0;
             break;
         }
     }
@@ -144,15 +178,36 @@ void Character_update(Elements *self)
         chara->y =  640 - chara->height;
         chara->is_jumping = false;
         chara->velocity_y = 0;
+        chara->change = 0;
     }
 }
 
 void Character_draw(Elements *self)
 {
     Character *chara = ((Character *)(self->pDerivedObj));
-    ALLEGRO_BITMAP *frame = chara->img;
-    if (frame)
-        al_draw_bitmap(frame, chara->x, chara->y, (chara->dir ? ALLEGRO_FLIP_HORIZONTAL : 0));
+    
+
+    if (chara->state == STOP){
+        if(chara->change == 0){
+            al_draw_bitmap_region(chara->img[0], 0, 0, 64, 112, chara->x, chara->y, (chara->dir ? 0 : ALLEGRO_FLIP_HORIZONTAL));
+        }
+        else if(chara->change == 2){
+            al_draw_bitmap(chara->img[1], chara->x, chara->y, (chara->dir ? 0 : ALLEGRO_FLIP_HORIZONTAL));
+        }
+    }
+
+    else if (chara->state == MOVE)
+        if(chara->change == 0){
+            al_draw_bitmap_region(chara->img[0], 64, 0, 64, 112, chara->x, chara->y, (chara->dir ? 0 : ALLEGRO_FLIP_HORIZONTAL));
+        }
+        else if(chara->change == 1){
+            al_draw_bitmap_region(chara->img[0], 128, 0, 64, 112, chara->x, chara->y, (chara->dir ? 0 : ALLEGRO_FLIP_HORIZONTAL));
+        }
+        else if(chara->change == 2){
+            al_draw_bitmap(chara->img[1], chara->x, chara->y, (chara->dir ? 0 : ALLEGRO_FLIP_HORIZONTAL));
+        }
+    
+    printf("y: %d, cnt: %d\n", chara->y, chara->chara_cnt);
 }
 
 void Character_destory(Elements *self)
