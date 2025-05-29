@@ -3,9 +3,12 @@
 #include "projectile.h"
 #include "../shapes/Rectangle.h"
 #include "../algif5/src/algif.h"
+#include "../scene/level1.h"
 #include <stdio.h>
 #include <stdbool.h>
 
+// Global variable for death state
+extern int dead_cnt;
 
 int platform_check[7][4] = {{912, 576, 160, 64},
                         {1072, 192, 80, 384},
@@ -25,6 +28,7 @@ Elements *New_Character(int label)
     // load character image
     pDerivedObj->img[0] = al_load_bitmap("assets/image/player.png");
     pDerivedObj->img[1] = al_load_bitmap("assets/image/jump.png");
+    pDerivedObj->img[2] = al_load_bitmap("assets/image/dead.png");
     pDerivedObj->width = 64;
     pDerivedObj->height = 112;
     pDerivedObj->chara_cnt = 0;
@@ -67,6 +71,12 @@ void Character_update(Elements *self)
     Character *chara = ((Character *)(self->pDerivedObj));
     Level1 *level = (Level1 *)(scene->pDerivedObj);
     int tile_size = 32; // 請根據你的地圖實際 tile size 調整
+
+    // Check for death state
+    if (dead_cnt) {
+        chara->state = DEAD;
+    }
+
 
     int origin_x = chara->x;
     int origin_y = chara->y;
@@ -129,6 +139,7 @@ void Character_update(Elements *self)
             chara->chara_cnt = 0;
         }
     }
+
     if(chara->x < 0)
         chara->x = 0;
     if(chara->x+chara->width > 1280)
@@ -194,16 +205,21 @@ void Character_draw(Elements *self)
         }
     }
 
-    else if (chara->state == MOVE)
-        if(chara->move_step == 0){
+    else if (chara->state == MOVE){
+         if(chara->move_step == 0){
             al_draw_bitmap_region(chara->img[0], 64, 0, 64, 112, chara->x, chara->y, (chara->dir ? 0 : ALLEGRO_FLIP_HORIZONTAL));
         }
         else if(chara->move_step == 1){
             al_draw_bitmap_region(chara->img[0], 128, 0, 64, 112, chara->x, chara->y, (chara->dir ? 0 : ALLEGRO_FLIP_HORIZONTAL));
         }
+    }
 
+    else if(chara->state == DEAD){
+        al_draw_bitmap(chara->img[2], chara->x, chara->y, 1);
+        dead_cnt = 2;
+    }
+    printf("dead_cnt: %d\n", dead_cnt);
     
-    printf("y: %d, cnt: %d, change: %d\n", chara->y, chara->chara_cnt, chara->change);
 }
 
 void Character_destory(Elements *self)
@@ -212,6 +228,7 @@ void Character_destory(Elements *self)
     al_destroy_sample_instance(Obj->atk_Sound);
     al_destroy_bitmap(Obj->img[0]);
     al_destroy_bitmap(Obj->img[1]);
+    al_destroy_bitmap(Obj->img[2]);
     free(Obj->hitbox);
     free(Obj);
     free(self);

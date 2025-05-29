@@ -9,6 +9,7 @@
 #include "level1.h"
 #include "scene.h"
 #include "../global.h"
+#include "../element/charater.h"
 
 #define MAP_WIDTH 80
 #define MAP_HEIGHT 46
@@ -83,7 +84,7 @@ void level1_update(Scene* self) {
             Obj->spine_state = 2;
     }
     if(Obj->spine_upsidedown_state == 1){
-        if(Obj->spine_upsidedown_y < 1360)
+        if(Obj->spine_upsidedown_y < 544)
             Obj->spine_upsidedown_move_cnt = 8;
         else {
             Obj->spine_upsidedown_state = 2;
@@ -103,24 +104,14 @@ void level1_update(Scene* self) {
             }
 
             if(Obj->spine_state == 1 && isColliding(chara->x, chara->y, chara->width, chara->height, Obj->spine_x, Obj->spine_y - 32, 104, 160)){
-                self->scene_end = true;
-                int cnt=0;
-                for(int i=0;i<10000;i++) {
-                    cnt++;
-                    if(cnt == 10000)  window = 4;
-                }
+                dead_cnt = 1;                
             }
-            if(isColliding(chara->x, chara->y, chara->width, chara->height, Obj->spine_upsidedown_x, Obj->spine_upsidedown_y - 48, 128, 64)){
-                self->scene_end = true;
-                int cnt=0;
-                for(int i=0;i<10000;i++) {
-                    cnt++;
-                    if(cnt == 10000)  window = 4;
-                }
+            if(Obj->spine_upsidedown_state == 1 && isColliding(chara->x, chara->y, chara->width, chara->height, Obj->spine_upsidedown_x, Obj->spine_upsidedown_y - 48, 128, 64)){
+                dead_cnt = 1;                
             }
+
             if(Obj->door_state == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, 1216, 64, 96, 96)){
                 Obj->door_state = 1;
-
             }
             if(Obj->door_state == 2 && isColliding(chara->x, chara->y, chara->width, chara->height, 256, 192, 96, 96))
             {
@@ -131,9 +122,16 @@ void level1_update(Scene* self) {
                     self->scene_end = true;
                     window = 5;
                 }
-            }else if(Obj->door_cnt > 0)
+            }
+            else if(Obj->door_cnt > 0)
             {
                 Obj->door_cnt--;
+            }
+
+            if(dead_cnt == 2){
+                dead_cnt = 0;
+                self->scene_end = true;
+                window = 4;
             }
         }
     }
@@ -175,10 +173,10 @@ void level1_draw(Scene* self) {
     double spine_y = Obj->spine_y - sin((double)Obj->spine_move_cnt/80 * 3.1415926) * 160;
     al_draw_bitmap(Obj->spine_img, spine_x, spine_y, 0);
     // draw upsidedown spine
-    double spine_upsidedown_x = Obj->spine_upsidedown_x;
-    double spine_upsidedown_y = Obj->spine_upsidedown_y + Obj->spine_upsidedown_move_cnt;
-    al_draw_bitmap(Obj->spine_upsidedown_img, spine_upsidedown_x, spine_upsidedown_y, 0);
-    Obj->spine_upsidedown_y = spine_upsidedown_y;
+    double upsidedown_x = Obj->spine_upsidedown_x;
+    double upsidedown_y = Obj->spine_upsidedown_y + Obj->spine_upsidedown_move_cnt;
+    al_draw_bitmap(Obj->spine_upsidedown_img, upsidedown_x, upsidedown_y, 0);
+    Obj->spine_upsidedown_y = upsidedown_y;
     // draw character
     ElementVec allEle = _Get_all_elements(self);
     for (int i = 0; i < allEle.len; i++)

@@ -12,7 +12,6 @@
 #define MAP_WIDTH 80
 #define MAP_HEIGHT 45
 #define TILE_SIZE 32
-
 /*
    [Set object]
 */
