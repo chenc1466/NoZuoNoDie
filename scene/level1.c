@@ -71,9 +71,10 @@ void level1_update(Scene* self) {
         Obj->door_move_cnt++;
         if(Obj->door_move_cnt < 80)
             Obj->door_move_cnt++;
-        else 
+        else {
             Obj->door_state = 2;
             Obj->spine_upsidedown_state = 1;
+        }
     }
     if(Obj->spine_state == 1){
         if(Obj->spine_move_cnt < 80)
@@ -84,7 +85,7 @@ void level1_update(Scene* self) {
     if(Obj->spine_upsidedown_state == 1){
         if(Obj->spine_upsidedown_y < 1360)
             Obj->spine_upsidedown_move_cnt = 8;
-        else    {
+        else {
             Obj->spine_upsidedown_state = 2;
             Obj->spine_upsidedown_move_cnt = 0;
         }

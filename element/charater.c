@@ -65,7 +65,7 @@ void Character_update(Elements *self)
 {
     Character *chara = ((Character *)(self->pDerivedObj));
     Level1 *level = (Level1 *)(scene->pDerivedObj);
-    int tile_size = 32; // 請根據你的地圖實際 tile size 調整                                                                                                                                                                                                                                                                
+    int tile_size = 32; // 請根據你的地圖實際 tile size 調整
 
     int origin_x = chara->x;
     int origin_y = chara->y;
@@ -77,7 +77,7 @@ void Character_update(Elements *self)
         {
             chara->velocity_y = chara->jump_force;
             chara->is_jumping = true;
-            chara->change = 2;
+            chara->change = 1;
         }
 
         if (key_state[key_used[0]] || key_state[ALLEGRO_KEY_A]) // left
@@ -96,41 +96,36 @@ void Character_update(Elements *self)
         int move_step = 5;
         if(chara->chara_cnt < 15)   
             chara->chara_cnt++;
-        else
-            chara->chara_cnt = 0;
 
+        if(chara->chara_cnt == 15) {
+            chara->move_step = !chara->move_step;
+            chara->chara_cnt = 0;
+        }
+        
         if ((key_state[key_used[2]] || key_state[ALLEGRO_KEY_W]) && !chara->is_jumping)
         {
             chara->velocity_y = chara->jump_force;
             chara->is_jumping = true;
             chara->state = MOVE;
         }
+
         if (key_state[key_used[0]] || key_state[ALLEGRO_KEY_A]) // left
         {
             chara->dir = false;
             chara->x -= move_step;
             chara->state = MOVE;
-            if(chara->chara_cnt >= 15) {
-                chara->change = !chara->change;
-                chara->chara_cnt = 0;
-            }
         }
         else if (key_state[key_used[1]] || key_state[ALLEGRO_KEY_D]) // right
         {
             chara->dir = true;
             chara->x += move_step;
             chara->state = MOVE;
-            if(chara->chara_cnt >= 15) {
-                chara->change = !chara->change;
-                chara->chara_cnt = 0;
-            }
         }
-        if(!(key_state[key_used[0]] || key_state[ALLEGRO_KEY_A]) && 
-           !(key_state[key_used[1]] || key_state[ALLEGRO_KEY_D]) &&
-           !(key_state[key_used[2]] || key_state[ALLEGRO_KEY_W])) {
+        if(!(key_state[key_used[0]] || key_state[ALLEGRO_KEY_A] ||
+           key_state[key_used[1]] || key_state[ALLEGRO_KEY_D] ||
+           key_state[key_used[2]] || key_state[ALLEGRO_KEY_W])) {
             chara->state = STOP;
             chara->chara_cnt = 0;
-            chara->change = 0;
         }
     }
     if(chara->x < 0)
@@ -140,6 +135,7 @@ void Character_update(Elements *self)
     // 處理跳躍 & 重力
     chara->velocity_y += chara->gravity;
     chara->y += chara->velocity_y;
+
 
 
     for (int i = 0; i < 7; i++) {
@@ -174,11 +170,12 @@ void Character_update(Elements *self)
         }
     }
 
-    if(chara->y > 640 - chara->height){
+    if(chara->y > 640 - chara->height ){
         chara->y =  640 - chara->height;
         chara->is_jumping = false;
         chara->velocity_y = 0;
         chara->change = 0;
+
     }
 }
 
@@ -191,30 +188,29 @@ void Character_draw(Elements *self)
         if(chara->change == 0){
             al_draw_bitmap_region(chara->img[0], 0, 0, 64, 112, chara->x, chara->y, (chara->dir ? 0 : ALLEGRO_FLIP_HORIZONTAL));
         }
-        else if(chara->change == 2){
+        else if(chara->change == 1){
             al_draw_bitmap(chara->img[1], chara->x, chara->y, (chara->dir ? 0 : ALLEGRO_FLIP_HORIZONTAL));
         }
     }
 
     else if (chara->state == MOVE)
-        if(chara->change == 0){
+        if(chara->move_step == 0){
             al_draw_bitmap_region(chara->img[0], 64, 0, 64, 112, chara->x, chara->y, (chara->dir ? 0 : ALLEGRO_FLIP_HORIZONTAL));
         }
-        else if(chara->change == 1){
+        else if(chara->move_step == 1){
             al_draw_bitmap_region(chara->img[0], 128, 0, 64, 112, chara->x, chara->y, (chara->dir ? 0 : ALLEGRO_FLIP_HORIZONTAL));
         }
-        else if(chara->change == 2){
-            al_draw_bitmap(chara->img[1], chara->x, chara->y, (chara->dir ? 0 : ALLEGRO_FLIP_HORIZONTAL));
-        }
+
     
-    printf("y: %d, cnt: %d\n", chara->y, chara->chara_cnt);
+    printf("y: %d, cnt: %d, change: %d\n", chara->y, chara->chara_cnt, chara->change);
 }
 
 void Character_destory(Elements *self)
 {
     Character *Obj = ((Character *)(self->pDerivedObj));
     al_destroy_sample_instance(Obj->atk_Sound);
-    al_destroy_bitmap(Obj->img);
+    al_destroy_bitmap(Obj->img[0]);
+    al_destroy_bitmap(Obj->img[1]);
     free(Obj->hitbox);
     free(Obj);
     free(self);

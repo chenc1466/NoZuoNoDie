@@ -36,6 +36,7 @@ typedef struct _Character
     bool is_jumping;       // 是否正在跳躍
     int chara_cnt;
     int change; 
+    int move_step;
 } Character;
 Elements *New_Character(int label);
 void _Character_update_position(Elements *self, int dx, int dy);
