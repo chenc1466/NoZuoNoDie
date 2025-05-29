@@ -33,4 +33,7 @@ extern ALLEGRO_SAMPLE_INSTANCE *sample_instance;
 extern int key_used[3];
 extern int now_bgm;
 extern double now_vol;
+extern int now_ctr;
+bool isColliding(int x1, int y1, int w1, int h1,
+                 int x2, int y2, int w2, int h2);
 #endif

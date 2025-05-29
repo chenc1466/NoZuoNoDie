@@ -18,3 +18,10 @@ bool mouse_state[ALLEGRO_MOUSE_MAX_EXTRA_AXES] = {false};
 int key_used[3] = {ALLEGRO_KEY_LEFT, ALLEGRO_KEY_RIGHT, ALLEGRO_KEY_SPACE};
 Point mouse;
 bool debug_mode = true;
+int now_ctr = -1;
+
+bool isColliding(int x1, int y1, int w1, int h1,
+                 int x2, int y2, int w2, int h2) {
+    return (x1 < x2 + w2 && x1 + w1 > x2 &&
+            y1 < y2 + h2 && y1 + h1 > y2);
+}

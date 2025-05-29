@@ -9,9 +9,17 @@ typedef enum SceneType
     Menu_L = 0,
     Stage_L,
     Set_L,
-    GameScene_L
+    GameScene_L,
+    Level1_L
 } SceneType;
-
+typedef enum EleType
+{
+    Floor_L,
+    Teleport_L,
+    Tree_L,
+    Character_L,
+    Projectile_L
+} EleType;
 /*
    [scene object]
 */

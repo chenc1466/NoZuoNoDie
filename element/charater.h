@@ -4,6 +4,7 @@
 #include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_image.h>
 #include "element.h"
+#include "../scene/level1.h"
 #include "../shapes/Shape.h"
 #include "../algif5/src/algif.h"
 #include <stdbool.h>
@@ -15,7 +16,7 @@ typedef enum CharacterType
 {
     STOP = 0,
     MOVE,
-    ATK
+    JUMP
 } CharacterType;
 typedef struct _Character
 {
@@ -23,12 +24,16 @@ typedef struct _Character
     int width, height;              // the width and height of image
     bool dir;                       // true: face to right, false: face to left
     int state;                      // the state of character
-    ALGIF_ANIMATION *gif_status[3]; // gif for each state. 0: stop, 1: move, 2:attack
+    ALLEGRO_BITMAP *img; // gif for each state. 0: stop, 1: move, 2:attack
     ALLEGRO_SAMPLE_INSTANCE *atk_Sound;
     int anime;      // counting the time of animation
     int anime_time; // indicate how long the animation
     bool new_proj;
     Shape *hitbox; // the hitbox of object
+    float velocity_y;      // 垂直速度
+    float gravity;         // 重力加速度
+    float jump_force;      // 跳躍力度
+    bool is_jumping;       // 是否正在跳躍
 } Character;
 Elements *New_Character(int label);
 void _Character_update_position(Elements *self, int dx, int dy);

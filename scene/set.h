@@ -17,6 +17,7 @@ typedef struct _Set
     Button *bgm2_btn;
     Button *vol1_btn;
     Button *vol2_btn;
+    Button *ctr_btn[3];
 } Set;
 Scene *New_Set(int label);
 void set_update(Scene *self);

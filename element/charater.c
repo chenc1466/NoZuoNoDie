@@ -5,148 +5,166 @@
 #include "../algif5/src/algif.h"
 #include <stdio.h>
 #include <stdbool.h>
-/*
-   [Character function]
-*/
+
+
+int platform_check[7][4] = {{912, 576, 160, 64},
+                        {1072, 192, 80, 384},
+                        {192, 288, 224, 64},
+                        {480, 160, 144, 64},
+                        {528, 400, 208, 64},
+                        {752, 112, 208, 64},
+                        {848, 464, 144, 64}
+                        };
+
+/* [Character function] */
 Elements *New_Character(int label)
 {
     Character *pDerivedObj = (Character *)malloc(sizeof(Character));
     Elements *pObj = New_Elements(label);
-    // setting derived object member
-    // load character images
-    char state_string[3][10] = {"stop", "move", "attack"};
-    for (int i = 0; i < 3; i++)
-    {
-        char buffer[50];
-        sprintf(buffer, "assets/image/chara_%s.gif", state_string[i]);
-        pDerivedObj->gif_status[i] = algif_new_gif(buffer, -1);
-    }
-    // load effective sound
+
+    // load character image
+    pDerivedObj->img = al_load_bitmap("assets/image/player.png");
+    pDerivedObj->width = al_get_bitmap_width(pDerivedObj->img);
+    pDerivedObj->height = al_get_bitmap_height(pDerivedObj->img);
+
+    // load attack sound
     ALLEGRO_SAMPLE *sample = al_load_sample("assets/sound/atk_sound.wav");
     pDerivedObj->atk_Sound = al_create_sample_instance(sample);
     al_set_sample_instance_playmode(pDerivedObj->atk_Sound, ALLEGRO_PLAYMODE_ONCE);
     al_attach_sample_instance_to_mixer(pDerivedObj->atk_Sound, al_get_default_mixer());
 
-    // initial the geometric information of character
-    pDerivedObj->width = pDerivedObj->gif_status[0]->width;
-    pDerivedObj->height = pDerivedObj->gif_status[0]->height;
-    pDerivedObj->x = 300;
-    pDerivedObj->y = HEIGHT - pDerivedObj->height - 60;
+    // init position and hitbox
+    pDerivedObj->x = 0;
+    pDerivedObj->y = 0;
     pDerivedObj->hitbox = New_Rectangle(pDerivedObj->x,
                                         pDerivedObj->y,
                                         pDerivedObj->x + pDerivedObj->width,
                                         pDerivedObj->y + pDerivedObj->height);
-    pDerivedObj->dir = false; // true: face to right, false: face to left
-    // initial the animation component
+
+    pDerivedObj->dir = false;
     pDerivedObj->state = STOP;
     pDerivedObj->new_proj = false;
+    pDerivedObj->velocity_y = 0;
+    pDerivedObj->gravity = 0.3f;
+    pDerivedObj->jump_force = -10.0f;
+    pDerivedObj->is_jumping = false;
+
     pObj->pDerivedObj = pDerivedObj;
-    // setting derived object function
     pObj->Draw = Character_draw;
     pObj->Update = Character_update;
     pObj->Interact = Character_interact;
     pObj->Destroy = Character_destory;
+
     return pObj;
 }
+
 void Character_update(Elements *self)
 {
-    // use the idea of finite state machine to deal with different state
     Character *chara = ((Character *)(self->pDerivedObj));
+    Level1 *level = (Level1 *)(scene->pDerivedObj);
+    int tile_size = 32; // 請根據你的地圖實際 tile size 調整
+
+    int origin_x = chara->x;
+    int origin_y = chara->y;
+
     if (chara->state == STOP)
     {
-        if (key_state[ALLEGRO_KEY_SPACE])
+        if ((key_state[key_used[2]] || key_state[ALLEGRO_KEY_W]) && !chara->is_jumping)
         {
-            chara->state = ATK;
+            chara->velocity_y = chara->jump_force;
+            chara->is_jumping = true;
         }
-        else if (key_state[ALLEGRO_KEY_A])
+
+        if (key_state[key_used[0]] || key_state[ALLEGRO_KEY_A]) // left
         {
             chara->dir = false;
             chara->state = MOVE;
         }
-        else if (key_state[ALLEGRO_KEY_D])
+        else if (key_state[key_used[1]] || key_state[ALLEGRO_KEY_D]) // right
         {
             chara->dir = true;
             chara->state = MOVE;
-        }
-        else
-        {
-            chara->state = STOP;
         }
     }
     else if (chara->state == MOVE)
     {
-        if (key_state[ALLEGRO_KEY_SPACE])
-        {
-            chara->state = ATK;
-        }
-        else if (key_state[ALLEGRO_KEY_A])
+        int move_step = 5;
+        if (key_state[key_used[0]] || key_state[ALLEGRO_KEY_A]) // left
         {
             chara->dir = false;
-            _Character_update_position(self, -5, 0);
-            chara->state = MOVE;
+            chara->x -= move_step;
         }
-        else if (key_state[ALLEGRO_KEY_D])
+        else if (key_state[key_used[1]] || key_state[ALLEGRO_KEY_D]) // right
         {
             chara->dir = true;
-            _Character_update_position(self, 5, 0);
-            chara->state = MOVE;
+            chara->x += move_step;
         }
-        if (chara->gif_status[chara->state]->done)
-            chara->state = STOP;
+        chara->state = STOP;
     }
-    else if (chara->state == ATK)
-    {
-        if (chara->gif_status[chara->state]->done)
-        {
-            chara->state = STOP;
-            chara->new_proj = false;
+    if(chara->x < 0)
+        chara->x = 0;
+    if(chara->x+chara->width > 1280)
+        chara->x = 1280 - chara->width;
+    // 處理跳躍 & 重力
+    chara->velocity_y += chara->gravity;
+    chara->y += chara->velocity_y;
+
+    for (int i = 0; i < 7; i++) {
+        int px = platform_check[i][0];  // 平台 x
+        int py = platform_check[i][1];  // 平台 y
+        int pw = platform_check[i][2];  // 平台寬度
+        int ph = platform_check[i][3];  // 平台高度
+
+        bool overlapX = (chara->x + chara->width > px) && (chara->x < px + pw);
+        bool fallingFromAbove = (origin_y + chara->height <= py);
+        bool hasLanded = (chara->y + chara->height >= py);
+
+        if (overlapX && fallingFromAbove && hasLanded) {
+            chara->y = py - chara->height;   // 放在平台上
+            chara->is_jumping = false;       // 停止跳躍
+            chara->velocity_y = 0;           // 垂直速度歸零
+            break;
         }
-        if (chara->gif_status[ATK]->display_index == 2 && chara->new_proj == false)
-        {
-            Elements *pro;
-            if (chara->dir)
-            {
-                pro = New_Projectile(Projectile_L,
-                                     chara->x + chara->width - 100,
-                                     chara->y + 10,
-                                     5);
-            }
-            else
-            {
-                pro = New_Projectile(Projectile_L,
-                                     chara->x - 50,
-                                     chara->y + 10,
-                                     -5);
-            }
-            _Register_elements(scene, pro);
-            chara->new_proj = true;
+    }
+
+    for (int i = 0; i < 2; i++) {
+        int px = platform_check[i][0];
+        int py = platform_check[i][1];
+        int pw = platform_check[i][2];
+        int ph = platform_check[i][3];
+
+        if (isColliding(chara->x, chara->y, chara->width, chara->height,
+                        px, py, pw, ph)) {
+            chara->x = origin_x;
+            break;
         }
+    }
+
+    if(chara->y > 640 - chara->height){
+        chara->y =  640 - chara->height;
+        chara->is_jumping = false;
+        chara->velocity_y = 0;
     }
 }
+
 void Character_draw(Elements *self)
 {
-    // with the state, draw corresponding image
     Character *chara = ((Character *)(self->pDerivedObj));
-    ALLEGRO_BITMAP *frame = algif_get_bitmap(chara->gif_status[chara->state], al_get_time());
+    ALLEGRO_BITMAP *frame = chara->img;
     if (frame)
-    {
-        al_draw_bitmap(frame, chara->x, chara->y, ((chara->dir) ? ALLEGRO_FLIP_HORIZONTAL : 0));
-    }
-    if (chara->state == ATK && chara->gif_status[chara->state]->display_index == 2)
-    {
-        al_play_sample_instance(chara->atk_Sound);
-    }
+        al_draw_bitmap(frame, chara->x, chara->y, (chara->dir ? ALLEGRO_FLIP_HORIZONTAL : 0));
 }
+
 void Character_destory(Elements *self)
 {
     Character *Obj = ((Character *)(self->pDerivedObj));
     al_destroy_sample_instance(Obj->atk_Sound);
-    for (int i = 0; i < 3; i++)
-        algif_destroy_animation(Obj->gif_status[i]);
+    al_destroy_bitmap(Obj->img);
     free(Obj->hitbox);
     free(Obj);
     free(self);
 }
+void Character_interact(Elements *self, Elements *target){}
 
 void _Character_update_position(Elements *self, int dx, int dy)
 {
@@ -158,4 +176,3 @@ void _Character_update_position(Elements *self, int dx, int dy)
     hitbox->update_center_y(hitbox, dy);
 }
 
-void Character_interact(Elements *self, Elements *tar) {}

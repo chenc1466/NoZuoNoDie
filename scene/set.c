@@ -40,6 +40,24 @@ Scene *New_Set(int label)
     pDerivedObj->back_btn->img[0] = al_load_bitmap("assets/image/back_btn_0.png");
     pDerivedObj->back_btn->img[1] = al_load_bitmap("assets/image/back_btn_1.png");
 
+    // Ctr Button
+    pDerivedObj->ctr_btn[0] = New_Button(351, 230, 200, 67, 0, 0);
+    pDerivedObj->ctr_btn[0]->img[0] = al_load_bitmap("assets/image/ctr_btn_0.png");
+    pDerivedObj->ctr_btn[0]->img[1] = al_load_bitmap("assets/image/ctr_btn_1.png");
+    pDerivedObj->ctr_btn[0]->img[2] = al_load_bitmap("assets/image/ctr_btn_2.png");
+
+    // Ctr Button
+    pDerivedObj->ctr_btn[1] = New_Button(351, 335, 200, 67, 0, 0);
+    pDerivedObj->ctr_btn[1]->img[0] = al_load_bitmap("assets/image/ctr_btn_0.png");
+    pDerivedObj->ctr_btn[1]->img[1] = al_load_bitmap("assets/image/ctr_btn_1.png");
+    pDerivedObj->ctr_btn[1]->img[2] = al_load_bitmap("assets/image/ctr_btn_2.png");
+    
+    // Ctr Button
+    pDerivedObj->ctr_btn[2] = New_Button(351, 441, 200, 67, 0, 0);
+    pDerivedObj->ctr_btn[2]->img[0] = al_load_bitmap("assets/image/ctr_btn_0.png");
+    pDerivedObj->ctr_btn[2]->img[1] = al_load_bitmap("assets/image/ctr_btn_1.png");
+    pDerivedObj->ctr_btn[2]->img[2] = al_load_bitmap("assets/image/ctr_btn_2.png");
+
     pObj->pDerivedObj = pDerivedObj;
     // setting derived object function
     pObj->Update = set_update;
@@ -57,11 +75,16 @@ void set_update(Scene *self)
     {
         self->scene_end = true;
         window = 1;
+        now_ctr = -1;
     }
     Button_Update(Obj->bgm1_btn);
     Button_Update(Obj->bgm2_btn);
     Button_Update(Obj->vol1_btn);
     Button_Update(Obj->vol2_btn);
+    Button_Update(Obj->ctr_btn[0]);
+    Button_Update(Obj->ctr_btn[1]);
+    Button_Update(Obj->ctr_btn[2]);
+
     if(Obj->bgm1_btn->isPress){
         switch_bgm(0);
         now_bgm = 0;
@@ -80,6 +103,18 @@ void set_update(Scene *self)
         wait = 1;
         al_set_sample_instance_gain(sample_instance, now_vol);
     }
+    if(Obj->ctr_btn[0]->isPress){
+        now_ctr = 0;
+    }
+    else if(Obj->ctr_btn[1]->isPress){
+        now_ctr = 1;
+    }
+    else if(Obj->ctr_btn[2]->isPress){
+        now_ctr = 2;
+    }
+    else if(mouse_state[1]){
+        now_ctr = -1;
+    }
     if(wait && !Obj->vol1_btn->isPress && !Obj->vol2_btn->isPress){
         wait = 0;
     }
@@ -94,14 +129,21 @@ void set_draw(Scene *self)
     Draw_Button(Obj->back_btn);
     al_draw_bitmap(Obj->bgm1_btn->img[now_bgm == 0 ? 2 : Obj->bgm1_btn->isHover], Obj->bgm1_btn->x, Obj->bgm1_btn->y, 0);
     al_draw_bitmap(Obj->bgm2_btn->img[now_bgm == 1 ? 2 : Obj->bgm2_btn->isHover], Obj->bgm2_btn->x, Obj->bgm2_btn->y, 0);
-    al_draw_bitmap(Obj->vol1_btn->img[Obj->vol1_btn->isHover], Obj->vol1_btn->x, Obj->vol1_btn->y, 0);
-    al_draw_bitmap(Obj->vol2_btn->img[Obj->vol2_btn->isHover], Obj->vol2_btn->x, Obj->vol2_btn->y, 0);
+    Draw_Button(Obj->vol1_btn);
+    Draw_Button(Obj->vol2_btn);
+    al_draw_bitmap(Obj->ctr_btn[0]->img[now_ctr == 0 ? 2 : Obj->ctr_btn[0]->isHover], Obj->ctr_btn[0]->x, Obj->ctr_btn[0]->y, 0);
+    al_draw_bitmap(Obj->ctr_btn[1]->img[now_ctr == 1 ? 2 : Obj->ctr_btn[1]->isHover], Obj->ctr_btn[1]->x, Obj->ctr_btn[1]->y, 0);
+    al_draw_bitmap(Obj->ctr_btn[2]->img[now_ctr == 2 ? 2 : Obj->ctr_btn[2]->isHover], Obj->ctr_btn[2]->x, Obj->ctr_btn[2]->y, 0);
     char vol[4];
     sprintf(vol, "%d", (int)(now_vol * 10));
+    ALLEGRO_COLOR white = al_map_rgb(255, 255, 255);
+    ALLEGRO_COLOR gray = al_map_rgb(175, 175, 175);
+    ALLEGRO_COLOR orange = al_map_rgb(244, 158, 76);
+
     al_draw_text(Obj->font, al_map_rgb(255, 255, 255), 975, 445, 1, vol );
-    al_draw_text(Obj->font, al_map_rgb(255, 255, 255), 451, 234, 1, al_keycode_to_name(key_used[0]) );
-    al_draw_text(Obj->font, al_map_rgb(255, 255, 255), 451, 339, 1, al_keycode_to_name(key_used[1]) );
-    al_draw_text(Obj->font, al_map_rgb(255, 255, 255), 451, 445, 1, al_keycode_to_name(key_used[2]) );
+    al_draw_text(Obj->font, (now_ctr == 0 ? orange :(Obj->ctr_btn[0]->isHover ? gray : white)), 451, 234, 1, al_keycode_to_name(key_used[0]) );
+    al_draw_text(Obj->font, (now_ctr == 1 ? orange :(Obj->ctr_btn[1]->isHover ? gray : white)), 451, 339, 1, al_keycode_to_name(key_used[1]) );
+    al_draw_text(Obj->font, (now_ctr == 2 ? orange :(Obj->ctr_btn[2]->isHover ? gray : white)), 451, 445, 1, al_keycode_to_name(key_used[2]) );
 }
 void set_destroy(Scene *self)
 {
@@ -124,6 +166,36 @@ void set_destroy(Scene *self)
         if (Obj->back_btn->img[i]) {
             al_destroy_bitmap(Obj->back_btn->img[i]);
             Obj->back_btn->img[i] = NULL;
+        }
+        if(Obj->vol1_btn->img[i]){
+            al_destroy_bitmap(Obj->vol1_btn->img[i]);
+            Obj->vol1_btn->img[i] = NULL;
+        }
+        if(Obj->vol2_btn->img[i]){
+            al_destroy_bitmap(Obj->vol2_btn->img[i]);
+            Obj->vol2_btn->img[i] = NULL;
+        }
+    }
+    for(int i = 0; i < 3; i++){
+        if(Obj->bgm1_btn->img[1]){
+            al_destroy_bitmap(Obj->bgm1_btn->img[i]);
+            Obj->bgm1_btn->img[i] = NULL;
+        }
+        if(Obj->bgm2_btn->img[1]){
+            al_destroy_bitmap(Obj->bgm2_btn->img[i]);
+            Obj->bgm2_btn->img[i] = NULL;
+        }
+        if(Obj->ctr_btn[0]->img[i]){
+            al_destroy_bitmap(Obj->ctr_btn[0]->img[i]);
+            Obj->ctr_btn[0]->img[i] = NULL;
+        }
+        if(Obj->ctr_btn[1]->img[i]){
+            al_destroy_bitmap(Obj->ctr_btn[1]->img[i]);
+            Obj->ctr_btn[1]->img[i] = NULL;
+        }
+        if(Obj->ctr_btn[2]->img[i]){
+            al_destroy_bitmap(Obj->ctr_btn[2]->img[i]);
+            Obj->ctr_btn[2]->img[i] = NULL;
         }
     }
     

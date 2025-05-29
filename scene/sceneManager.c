@@ -3,6 +3,8 @@
 #include "stageselect.h"
 #include "set.h"
 #include "gamescene.h"
+#include "level1.h"
+
 Scene *scene = NULL;
 void create_scene(SceneType type)
 {
@@ -19,6 +21,9 @@ void create_scene(SceneType type)
         break;
     case GameScene_L:
         scene = New_GameScene(GameScene_L);
+        break;
+    case Level1_L:
+        scene = New_Level1(Level1_L);
         break;
     default:
         break;

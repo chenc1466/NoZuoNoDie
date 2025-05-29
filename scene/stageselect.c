@@ -50,8 +50,13 @@ void select_update(Scene *self)
     Button_Update(Obj->set_btn);
     Button_Update(Obj->back_btn);
     for(int i = 0; i < 4; i++)
+    {
         Button_Update(Obj->lv_btn[i]);
-        
+        if(Obj->lv_btn[0]->isPress){
+            self->scene_end = true;
+            window = 3;
+        }
+    }   
     if (Obj->back_btn->isPress)
     {
         self->scene_end = true;
