@@ -9,6 +9,7 @@
 #include "../algif5/src/algif.h"
 #include <stdbool.h>
 
+
 /*
    [character object]
 */
@@ -16,7 +17,8 @@ typedef enum CharacterType
 {
     STOP = 0,
     MOVE,
-    JUMP
+    JUMP,
+    DEAD
 } CharacterType;
 typedef struct _Character
 {
@@ -24,7 +26,7 @@ typedef struct _Character
     int width, height;              // the width and height of image
     bool dir;                       // true: face to right, false: face to left
     int state;                      // the state of character
-    ALLEGRO_BITMAP *img[2]; // gif for each state. 0: stop, 1: move, 2:attack
+    ALLEGRO_BITMAP *img[3]; // gif for each state. 0: stop, 1: move, 2:attack
     ALLEGRO_SAMPLE_INSTANCE *atk_Sound;
     int anime;      // counting the time of animation
     int anime_time; // indicate how long the animation
