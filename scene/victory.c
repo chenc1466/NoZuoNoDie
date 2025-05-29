@@ -1,16 +1,16 @@
 #include <allegro5/allegro_primitives.h>
-#include "gameover.h"
+#include "victory.h"
 #include <stdbool.h>
 /*
    [Stage Select function]
 */
-Scene *New_Gameover(int label)
+Scene *New_Victory(int label)
 {
-    Gameover *pDerivedObj = (Gameover *)malloc(sizeof(Gameover));
+    Victory *pDerivedObj = (Victory *)malloc(sizeof(Victory));
     Scene *pObj = New_Scene(label);
 
     // Background
-    pDerivedObj->background = al_load_bitmap("assets/image/gameover.png");
+    pDerivedObj->background = al_load_bitmap("assets/image/victory.png");
 
     pObj->pDerivedObj = pDerivedObj;
     // setting derived object function
@@ -24,14 +24,14 @@ Scene *New_Gameover(int label)
     pDerivedObj->restart_btn->img[0] = al_load_bitmap("assets/image/restart_btn_00.png");
     pDerivedObj->restart_btn->img[1] = al_load_bitmap("assets/image/restart_btn_01.png");
 
-    pObj->Update = gameover_update;
-    pObj->Draw = gameover_draw;
-    pObj->Destroy = gameover_destroy;
+    pObj->Update = victory_update;
+    pObj->Draw = victory_draw;
+    pObj->Destroy = victory_destroy;
     return pObj;
 }
-void gameover_update(Scene *self)
+void victory_update(Scene *self)
 {
-    Gameover*Obj = ((Gameover *)(self->pDerivedObj));
+    Victory*Obj = ((Victory *)(self->pDerivedObj));
     Button_Update(Obj->restart_btn);
     Button_Update(Obj->back_btn);  
     if (Obj->back_btn->isPress)
@@ -46,16 +46,16 @@ void gameover_update(Scene *self)
     }
     return;
 }
-void gameover_draw(Scene *self)
+void victory_draw(Scene *self)
 {
-    Gameover *Obj = ((Gameover *)(self->pDerivedObj));
+    Victory *Obj = ((Victory *)(self->pDerivedObj));
     al_draw_bitmap(Obj->background, 0, 0, 0);
     Draw_Button(Obj->back_btn);
     Draw_Button(Obj->restart_btn);
 }
-void gameover_destroy(Scene *self)
+void victory_destroy(Scene *self)
 {
-    Gameover *Obj = ((Gameover *)(self->pDerivedObj));
+    Victory *Obj = ((Victory *)(self->pDerivedObj));
     
     // Destroy background
     if (Obj->background) {

@@ -1,5 +1,5 @@
-#ifndef GAMEOVER_H_INCLUDED
-#define GAMEOVER_H_INCLUDED
+#ifndef VICYORY_H_INCLUDED
+#define VICTORY_H_INCLUDED
 #include "scene.h"
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
@@ -8,14 +8,14 @@
 /*
    [Stage Select object]
 */
-typedef struct _Gameover
+typedef struct _Victory
 {
     ALLEGRO_BITMAP *background;
     Button *back_btn;
     Button *restart_btn;
-} Gameover;
-Scene *New_Gameover(int label);
-void gameover_update(Scene *self);
-void gameover_draw(Scene *self);
-void gameover_destroy(Scene *self);
+} Victory;
+Scene *New_Victory(int label);
+void victory_update(Scene *self);
+void victory_draw(Scene *self);
+void victory_destroy(Scene *self);
 #endif

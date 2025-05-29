@@ -20,12 +20,20 @@ Scene* New_Level1(int label) {
     pDerivedObj->background = al_load_bitmap("assets/image/lv1.png");
     pDerivedObj->door_img_set = al_load_bitmap("assets/image/door.png");
     pDerivedObj->spine_img = al_load_bitmap("assets/image/spine.png");
+    pDerivedObj->spine_upsidedown_img = al_load_bitmap("assets/image/spine_upsidedown.png");
     pDerivedObj->door_cnt = 0;
     pDerivedObj->door_state = 0;
     pDerivedObj->door_move_cnt = 0;
+    // spine 1
+    pDerivedObj->spine_state = 0;
     pDerivedObj->spine_move_cnt = 0;
     pDerivedObj->spine_x = 544;
     pDerivedObj->spine_y = 416;
+    // spine 2
+    pDerivedObj->spine_upsidedown_state = 0;
+    pDerivedObj->spine_upsidedown_move_cnt = 0;
+    pDerivedObj->spine_upsidedown_x = 1152;
+    pDerivedObj->spine_upsidedown_y = -752;
     // Load map
     FILE* file = fopen("assets/map/lv1_map.csv", "r");
     if (!file) {
@@ -65,12 +73,21 @@ void level1_update(Scene* self) {
             Obj->door_move_cnt++;
         else 
             Obj->door_state = 2;
+            Obj->spine_upsidedown_state = 1;
     }
     if(Obj->spine_state == 1){
-        if(Obj->spine_move_cnt < 40)
+        if(Obj->spine_move_cnt < 80)
             Obj->spine_move_cnt++;
         else 
             Obj->spine_state = 2;
+    }
+    if(Obj->spine_upsidedown_state == 1){
+        if(Obj->spine_upsidedown_y < 1360)
+            Obj->spine_upsidedown_move_cnt = 8;
+        else    {
+            Obj->spine_upsidedown_state = 2;
+            Obj->spine_upsidedown_move_cnt = 0;
+        }
     }
     ElementVec allEle = _Get_all_elements(self);
     for (int i = 0; i < allEle.len; i++)
@@ -80,12 +97,28 @@ void level1_update(Scene* self) {
         {
             Character *chara = ((Character *)(allEle.arr[i]->pDerivedObj));
             
-            if(Obj->spine_state == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, 656, 288, 16, 16)){
+            if(Obj->spine_state == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, 656, 288, 32, 16)){
                 Obj->spine_state = 1;
-                if(isColliding(chara->x, chara->y, chara->width, chara->height, 544, 416, 128, 160))
-
             }
-            
+
+            if(Obj->spine_state == 1 && isColliding(chara->x, chara->y, chara->width, chara->height, Obj->spine_x, Obj->spine_y - 32, 96, 160)){
+                self->scene_end = true;
+                int cnt=0;
+                for(int i=0;i<10000;i++) {
+                    cnt++;
+                    printf("%d\n",cnt);
+                    if(cnt == 10000)  window = 4;
+                }
+            }
+            if(isColliding(chara->x, chara->y, chara->width, chara->height, Obj->spine_upsidedown_x, Obj->spine_upsidedown_y - 48, 128, 64)){
+                self->scene_end = true;
+                int cnt=0;
+                for(int i=0;i<10000;i++) {
+                    cnt++;
+                    printf("%d\n",cnt);
+                    if(cnt == 10000)  window = 4;
+                }
+            }
             if(Obj->door_state == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, 1216, 64, 96, 96)){
                 Obj->door_state = 1;
 
@@ -97,7 +130,7 @@ void level1_update(Scene* self) {
                 }
                 else if(Obj->door_cnt == 80){
                     self->scene_end = true;
-                    window = 1;
+                    window = 5;
                 }
             }else if(Obj->door_cnt > 0)
             {
@@ -128,8 +161,6 @@ void level1_update(Scene* self) {
             _Remove_elements(self, ele);
     }
 
-
-
 }
 
 void level1_draw(Scene* self) {
@@ -144,6 +175,11 @@ void level1_draw(Scene* self) {
     double spine_x = Obj->spine_x;
     double spine_y = Obj->spine_y - sin((double)Obj->spine_move_cnt/80 * 3.1415926) * 160;
     al_draw_bitmap(Obj->spine_img, spine_x, spine_y, 0);
+    // draw upsidedown spine
+    double spine_upsidedown_x = Obj->spine_upsidedown_x;
+    double spine_upsidedown_y = Obj->spine_upsidedown_y + Obj->spine_upsidedown_move_cnt;
+    al_draw_bitmap(Obj->spine_upsidedown_img, spine_upsidedown_x, spine_upsidedown_y, 0);
+    Obj->spine_upsidedown_y = spine_upsidedown_y;
     // draw character
     ElementVec allEle = _Get_all_elements(self);
     for (int i = 0; i < allEle.len; i++)
