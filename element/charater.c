@@ -29,6 +29,7 @@ Elements *New_Character(int label)
     pDerivedObj->height = 112;
     pDerivedObj->chara_cnt = 0;
     pDerivedObj->change = 0;
+    pDerivedObj->move_step = 0;
 
     // load attack sound
     ALLEGRO_SAMPLE *sample = al_load_sample("assets/sound/atk_sound.wav");

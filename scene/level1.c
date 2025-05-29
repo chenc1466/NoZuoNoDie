@@ -102,12 +102,11 @@ void level1_update(Scene* self) {
                 Obj->spine_state = 1;
             }
 
-            if(Obj->spine_state == 1 && isColliding(chara->x, chara->y, chara->width, chara->height, Obj->spine_x, Obj->spine_y - 32, 96, 160)){
+            if(Obj->spine_state == 1 && isColliding(chara->x, chara->y, chara->width, chara->height, Obj->spine_x, Obj->spine_y - 32, 104, 160)){
                 self->scene_end = true;
                 int cnt=0;
                 for(int i=0;i<10000;i++) {
                     cnt++;
-                    printf("%d\n",cnt);
                     if(cnt == 10000)  window = 4;
                 }
             }
@@ -116,7 +115,6 @@ void level1_update(Scene* self) {
                 int cnt=0;
                 for(int i=0;i<10000;i++) {
                     cnt++;
-                    printf("%d\n",cnt);
                     if(cnt == 10000)  window = 4;
                 }
             }
