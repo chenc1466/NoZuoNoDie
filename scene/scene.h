@@ -10,7 +10,8 @@ typedef enum SceneType
     Stage_L,
     Set_L,
     GameScene_L,
-    Level1_L
+    Level1_L,
+    Gameover_L
 } SceneType;
 typedef enum EleType
 {

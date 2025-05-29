@@ -62,7 +62,7 @@ void Character_update(Elements *self)
 {
     Character *chara = ((Character *)(self->pDerivedObj));
     Level1 *level = (Level1 *)(scene->pDerivedObj);
-    int tile_size = 32; // 請根據你的地圖實際 tile size 調整
+    int tile_size = 32; // 請根據你的地圖實際 tile size 調整                                                                                                                                                                                                                                                                
 
     int origin_x = chara->x;
     int origin_y = chara->y;
