@@ -104,18 +104,16 @@ void level1_update(Scene* self) {
 
             if(Obj->spine_state == 1 && isColliding(chara->x, chara->y, chara->width, chara->height, Obj->spine_x, Obj->spine_y - 32, 104, 160)){
                 self->scene_end = true;
-                int cnt=0;
-                for(int i=0;i<10000;i++) {
-                    cnt++;
-                    if(cnt == 10000)  window = 4;
+                for(int i=0;i<=10000;i++) {
+                    printf(" ");
+                    if(i == 10000)  window = 4;
                 }
             }
             if(isColliding(chara->x, chara->y, chara->width, chara->height, Obj->spine_upsidedown_x, Obj->spine_upsidedown_y - 48, 128, 64)){
                 self->scene_end = true;
-                int cnt=0;
-                for(int i=0;i<10000;i++) {
-                    cnt++;
-                    if(cnt == 10000)  window = 4;
+                for(int i=0;i<=10000;i++) {
+                    printf(" ");
+                    if(i == 10000)  window = 4;
                 }
             }
             if(Obj->door_state == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, 1216, 64, 96, 96)){

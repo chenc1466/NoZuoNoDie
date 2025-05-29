@@ -6,7 +6,7 @@ SOURCE := $(wildcard *.c */*.c */*/*.c)
 SOURCE := $(filter-out mac_main.c, $(SOURCE))
 # SOURCE := $(filter-out tutorial, $(SOURCE))
 OBJ := $(patsubst %.c, %.o, $(notdir $(SOURCE)))
-RM_OBJ := 
+RM_OBJ :=                                                                                                                             
 RM_OUT := 
 
 ifeq ($(OS), Windows_NT) # Windows OS

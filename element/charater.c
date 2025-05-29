@@ -203,7 +203,7 @@ void Character_draw(Elements *self)
         }
 
     
-    printf("y: %d, cnt: %d, change: %d\n", chara->y, chara->chara_cnt, chara->change);
+    //printf("y: %d, cnt: %d, change: %d\n", chara->y, chara->chara_cnt, chara->change);
 }
 
 void Character_destory(Elements *self)
