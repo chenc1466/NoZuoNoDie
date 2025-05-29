@@ -76,6 +76,8 @@ void select_draw(Scene *self)
     al_draw_bitmap(Obj->background, 0, 0, 0);
     Draw_Button(Obj->set_btn);
     Draw_Button(Obj->back_btn);
+
+    
     for(int i = 0; i < 4; i++)
         Draw_Button(Obj->lv_btn[i]);
 }
