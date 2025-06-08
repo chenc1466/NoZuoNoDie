@@ -21,6 +21,10 @@ Scene* New_Level2(int label) {
     pDerivedObj->background = al_load_bitmap("assets/image/lv2.jpg");
     pDerivedObj->door_img_set = al_load_bitmap("assets/image/door.png");
     pDerivedObj->platform_img_set = al_load_bitmap("assets/image/pfm.jpg");
+    pDerivedObj->gear1_img = al_load_bitmap("assets/image/gear.png");
+    pDerivedObj->gear2_img = al_load_bitmap("assets/image/gear.png");
+    pDerivedObj->gear3_img = al_load_bitmap("assets/image/gear.png");
+    pDerivedObj->gear_angle = 0;
     pObj->pDerivedObj = pDerivedObj;
     pDerivedObj->platform_move = 0;
     // register character
@@ -34,7 +38,12 @@ Scene* New_Level2(int label) {
 }
 
 void level2_update(Scene* self) {
+
     Level2* Obj = ((Level2*)(self->pDerivedObj));
+    // gear
+    Obj->gear_angle ++;
+    if(Obj->gear_angle > 3600)  Obj->gear_angle = 0;
+    // door
     if(Obj->door_state == 1)
     {
         Obj->door_move_cnt++;
@@ -129,6 +138,11 @@ void level2_draw(Scene* self) {
     double door_x = 1168 + (256-1168) * ((double)Obj->door_move_cnt/80);
     double door_y = 544 + (192-544) * ((double)Obj->door_move_cnt/80);
     al_draw_bitmap_region(Obj->door_img_set, 96 * (int)(Obj->door_cnt/20), 0, 96, 96, door_x, door_y, 0);
+
+    // draw gear
+    al_draw_rotated_bitmap(Obj->gear1_img, 56, 56, 352 + 56, 624 + 56, Obj->gear_angle/10, 0);
+    al_draw_rotated_bitmap(Obj->gear2_img, 56, 56, 938 + 56, 624 + 56, Obj->gear_angle/10, 0);
+    al_draw_rotated_bitmap(Obj->gear3_img, 56, 56, 1136 + 56, 624 + 56, Obj->gear_angle/10, 0);
 
     //platform //1040, 448 -> 1040, 192
     double platform_x = 1040;
