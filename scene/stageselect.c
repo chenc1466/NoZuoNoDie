@@ -1,6 +1,7 @@
 #include <allegro5/allegro_primitives.h>
 #include "stageselect.h"
 #include <stdbool.h>
+//#define DEMO
 /*
    [Stage Select function]
 */
@@ -55,14 +56,15 @@ void select_update(Scene *self)
     {
         Button_Update(Obj->lv_btn[i]);
         if(Obj->lv_btn[0]->isPress){
+            character_total_state = 1;
             self->scene_end = true;
             window = 3;
         }
-        if(Obj->lv_btn[1]->isPress && character_total_state == 2){
+        if(Obj->lv_btn[1]->isPress && level_state >= 2){
             self->scene_end = true;
             window = 6;
         }
-        if(Obj->lv_btn[2]->isPress && character_total_state == 3){
+        if(Obj->lv_btn[2]->isPress && level_state >= 3){
             self->scene_end = true;
             window = 7;
         }
@@ -86,13 +88,14 @@ void select_draw(Scene *self)
     al_draw_bitmap(Obj->background, 0, 0, 0);
     Draw_Button(Obj->set_btn);
     Draw_Button(Obj->back_btn);
-/*
+    #ifdef DEMO
     Draw_Button(Obj->lv_btn[0]);
     Draw_Button(Obj->lv_btn[1]);
     Draw_Button(Obj->lv_btn[2]);
     Draw_Button(Obj->lv_btn[3]);
-*/
-    switch(character_total_state){
+    #endif
+    #ifndef DEMO
+    switch(level_state){
         case 1:
             Draw_Button(Obj->lv_btn[0]);
             al_draw_bitmap(Obj->lv_btn[1]->img[2], 681, 95, 0); 
@@ -114,6 +117,7 @@ void select_draw(Scene *self)
         default:
             break;
     }
+    #endif
 
 }
 void select_destroy(Scene *self)

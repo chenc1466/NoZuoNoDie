@@ -39,6 +39,7 @@ extern int dead_type;
 extern int level_state;
 extern int character_total_state;
 extern int platform_state;
+extern int level_state;
 bool isColliding(int x1, int y1, int w1, int h1,
                  int x2, int y2, int w2, int h2);
 #endif
