@@ -1,5 +1,5 @@
-#ifndef level1H_INCLUDED
-#define level1H_INCLUDED
+#ifndef level2H_INCLUDED
+#define level2H_INCLUDED
 #include <stdio.h>
 #include "scene.h"
 #include <allegro5/allegro_audio.h>
@@ -15,30 +15,22 @@
 /*
    [Set object]
 */
-typedef struct _Level1
+typedef struct _Level2
 {
     ALLEGRO_FONT *font;
     ALLEGRO_BITMAP *background;
     int map[MAP_HEIGHT][MAP_WIDTH];
     ALLEGRO_BITMAP *tile_img;
     ALLEGRO_BITMAP *door_img_set;
-    ALLEGRO_BITMAP *spine_img;
-    ALLEGRO_BITMAP *spine_upsidedown_img;
     int door_cnt;
     int door_state;
     int door_move_cnt;
-    int spine_state;
-    int spine_move_cnt;
-    int spine_x;
-    int spine_y;
-    int spine_upsidedown_state;
-    int spine_upsidedown_move_cnt;
-    int spine_upsidedown_x;
-    int spine_upsidedown_y;
-} Level1;
-Scene *New_Level1(int label);
-void level1_update(Scene *self);
-void level1_draw(Scene *self);
-void level1_destroy(Scene *self);
+
+
+} Level2;
+Scene *New_Level2(int label);
+void level2_update(Scene *self);
+void level2_draw(Scene *self);
+void level2_destroy(Scene *self);
 
 #endif

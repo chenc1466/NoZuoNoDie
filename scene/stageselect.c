@@ -56,6 +56,14 @@ void select_update(Scene *self)
             self->scene_end = true;
             window = 3;
         }
+        if(Obj->lv_btn[1]->isPress){
+            self->scene_end = true;
+            window = 6;
+        }
+        if(Obj->lv_btn[2]->isPress){
+            self->scene_end = true;
+            window = 7;
+        }
     }   
     if (Obj->back_btn->isPress)
     {

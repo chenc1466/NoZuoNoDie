@@ -1,6 +1,5 @@
 #include "charater.h"
 #include "../scene/sceneManager.h"
-#include "projectile.h"
 #include "../shapes/Rectangle.h"
 #include "../algif5/src/algif.h"
 #include "../scene/level1.h"
@@ -69,8 +68,6 @@ Elements *New_Character(int label)
 void Character_update(Elements *self)
 {
     Character *chara = ((Character *)(self->pDerivedObj));
-    Level1 *level = (Level1 *)(scene->pDerivedObj);
-    int tile_size = 32; // 請根據你的地圖實際 tile size 調整
 
     // Check for death state
     if (dead_cnt) {
@@ -218,9 +215,7 @@ void Character_draw(Elements *self)
         al_draw_bitmap(chara->img[2], chara->x, chara->y, 1);
         dead_cnt = 2;
     }
-    printf("dead_cnt: %d\n", dead_cnt);
-    
-    //printf("y: %d, cnt: %d, change: %d\n", chara->y, chara->chara_cnt, chara->change);
+
 }
 
 void Character_destory(Elements *self)

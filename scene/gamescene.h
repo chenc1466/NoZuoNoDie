@@ -3,10 +3,6 @@
 #include "scene.h"
 #include "../element/element.h"
 #include "../element/charater.h"
-#include "../element/floor.h"
-#include "../element/teleport.h"
-#include "../element/tree.h"
-#include "../element/projectile.h"
 /*
    [game scene object]
 */

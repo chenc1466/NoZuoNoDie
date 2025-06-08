@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "level2.h": "c",
+        "level3.h": "c",
+        "element.h": "c"
+    }
+}

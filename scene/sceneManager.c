@@ -6,6 +6,8 @@
 #include "level1.h"
 #include "gameover.h"
 #include "victory.h"
+#include "level2.h"
+#include "level3.h"
 
 Scene *scene = NULL;
 void create_scene(SceneType type)
@@ -32,6 +34,13 @@ void create_scene(SceneType type)
         break;
     case Victory_L:
         scene = New_Victory(Victory_L);
+        break;
+    case Level2_L:
+        scene = New_Level2(Level2_L);
+        break;
+    case Level3_L:
+        scene = New_Level3(Level3_L);
+        break;
     default:
         break;
     }

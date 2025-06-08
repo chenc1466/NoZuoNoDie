@@ -162,6 +162,12 @@ bool game_update(Game *self)
         case 5:
             create_scene(Victory_L);
             break;
+        case 6:
+            create_scene(Level2_L);
+            break;
+        case 7:
+            create_scene(Level3_L);
+            break;
         case -1:
             return false;
         default:
