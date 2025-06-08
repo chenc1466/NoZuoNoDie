@@ -4,6 +4,7 @@
 #include "../shapes/Rectangle.h"
 #include "../algif5/src/algif.h"
 #include "../scene/level1.h"
+#include "../scene/level2.h"
 #include <stdio.h>
 #include <stdbool.h>
 
@@ -12,7 +13,11 @@ extern int dead_cnt;
 int wall_cnt;
 int initial_y;
 int platform_cnt;
-int platform_check[9][4];  // Declare once
+int platform_check[10][4];  // Declare once
+int cnt_cnt = 1;
+
+int cnt[5] = {0, 1, 2, 4, 16};
+
 /* [Character function] */
 Elements *New_Character(int label)
 {
@@ -70,20 +75,20 @@ Elements *New_Character(int label)
             break;
         }
         case 2: {
-            int temp[9][4] = {
+            int temp[8][4] = {
+                {96, 0, 96, 720},
                 {624, 576, 128, 96},
                 {352, 208, 224, 64},
                 {656, 336, 256, 64},
                 {752, 112, 240, 64},
                 {1152, 208, 96, 96},
-                {1040, 192, 96, 32}, 
-                {1040, 224, 96, 32}, 
-                {1040, 288, 96, 32}, 
                 {1040, 416, 96, 32}, 
+                {1040, 656, 96, 32}, 
             };
-            platform_cnt = 9;
-            wall_cnt = 1;
-            initial_y = 670;
+            pDerivedObj->x = 192;
+            platform_cnt = 8;
+            wall_cnt = 2;
+            initial_y = 672;
             memcpy(platform_check, temp, sizeof(temp));
             break;
         }
@@ -126,7 +131,6 @@ void Character_update(Elements *self)
 
     int origin_x = chara->x;
     int origin_y = chara->y;
-
     if (chara->state == STOP)
     {
         chara->chara_cnt = 0;
@@ -186,9 +190,6 @@ void Character_update(Elements *self)
         }
     }
 
-    //level platform character moving
-
-
     if(chara->x < 0)
         chara->x = 0;
     if(chara->x+chara->width > 1280)
@@ -198,6 +199,12 @@ void Character_update(Elements *self)
     chara->y += chara->velocity_y;
 
 
+    if(platform_state == 0){
+        cnt_cnt = 0;
+    }
+    if(platform_state == 1){
+        cnt_cnt++;
+    }
 
     for (int i = 0; i < platform_cnt; i++) {
         int px = platform_check[i][0];  // 平台 x
@@ -216,7 +223,9 @@ void Character_update(Elements *self)
             chara->change = 0;
             break;
         }
-    }
+    }        
+    
+
 
     for (int i = 0; i < wall_cnt; i++) {
         int px = platform_check[i][0];
@@ -231,12 +240,11 @@ void Character_update(Elements *self)
         }
     }
 
-    if(chara->y > initial_y - chara->height ){
+    if(chara->y > initial_y - chara->height){
         chara->y = initial_y - chara->height;
         chara->is_jumping = false;
         chara->velocity_y = 0;
         chara->change = 0;
-
     }
 }
 

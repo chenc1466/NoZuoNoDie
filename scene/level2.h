@@ -43,7 +43,12 @@ typedef struct _Level2
     int gear3_x;
     int gear3_y;
     double gear_angle;
-
+    
+    // Platform properties
+    float platform_target_y;
+    float platform_speed;
+    bool platform_moving;
+    int platform_direction;
 } Level2;
 Scene *New_Level2(int label);
 void level2_update(Scene *self);
