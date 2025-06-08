@@ -13,7 +13,7 @@ extern int dead_cnt;
 int wall_cnt;
 int initial_y;
 int platform_cnt;
-int platform_check[10][4];  // Declare once
+int platform_check[17][4];  // Declare once
 int cnt_cnt = 1;
 int limit_x = 0;
 
@@ -96,17 +96,29 @@ Elements *New_Character(int label)
             break;
         }
         case 3: {
-            int temp[7][4] = {
-                {912, 576, 160, 64},
-                {1072, 192, 80, 384},
-                {192, 288, 224, 64},
-                {480, 160, 144, 64},
-                {528, 400, 208, 64},
-                {752, 112, 208, 64},
-                {848, 464, 144, 64}
+
+            int temp[17][4] = {
+                {1968, 448, 80, 32},
+                {224, 480, 112, 240},
+                {384, 480, 48, 16},
+                {1216, 480, 48, 16},
+                {1088, 80, 32 , 32},
+                {1024, 448, 32, 32},
+                {1808, 448, 32, 32},
+                {528, 448, 80, 32},
+                {2096, 384, 112, 48},
+                {720, 336, 208, 64},
+                {928, 112, 208, 80},
+                {2096, 384, 112, 48},
+                {768, 480, 224, 240},
+                {2048, 480, 192, 240},
+                {816, 80, 112, 256},
+                {1408, 368, 112, 112},
+                {2464, 384, 96, 96}
             };
-            wall_cnt = 0;
-            initial_y = 670;
+            platform_cnt = 17;
+            wall_cnt = 1;
+            initial_y = 480;
             limit_x = 2560;
             memcpy(platform_check, temp, sizeof(temp));
             break;
@@ -131,8 +143,6 @@ void Character_update(Elements *self)
     if (dead_cnt) {
         chara->state = DEAD;
     }
-
-
     int origin_x = chara->x;
     int origin_y = chara->y;
     if (chara->state == STOP)
@@ -255,23 +265,25 @@ void Character_update(Elements *self)
 void Character_draw(Elements *self)
 {
     Character *chara = ((Character *)(self->pDerivedObj));
-    
 
+    printf("chara->x: %d, chara->y: %d ", chara->x, chara->y);
+    printf("camera_x: %d, camera_y: %d\n", camera_x, camera_y);
+    
     if (chara->state == STOP){
         if(chara->change == 0){
-            al_draw_bitmap_region(chara->img[0], 0, 0, 64, 112, chara->x, chara->y, (chara->dir ? 0 : ALLEGRO_FLIP_HORIZONTAL));
+            al_draw_bitmap_region(chara->img[0], 0, 0, 64, 112, chara->x - camera_x, chara->y - camera_y, (chara->dir ? 0 : ALLEGRO_FLIP_HORIZONTAL));
         }
         else if(chara->change == 1){
-            al_draw_bitmap(chara->img[1], chara->x, chara->y, (chara->dir ? 0 : ALLEGRO_FLIP_HORIZONTAL));
+            al_draw_bitmap(chara->img[1], chara->x - camera_x, chara->y - camera_y, (chara->dir ? 0 : ALLEGRO_FLIP_HORIZONTAL));
         }
     }
-
+   
     else if (chara->state == MOVE){
          if(chara->move_step == 0){
-            al_draw_bitmap_region(chara->img[0], 64, 0, 64, 112, chara->x, chara->y, (chara->dir ? 0 : ALLEGRO_FLIP_HORIZONTAL));
+            al_draw_bitmap_region(chara->img[0], 64, 0, 64, 112, chara->x - camera_x, chara->y - camera_y, (chara->dir ? 0 : ALLEGRO_FLIP_HORIZONTAL));
         }
         else if(chara->move_step == 1){
-            al_draw_bitmap_region(chara->img[0], 128, 0, 64, 112, chara->x, chara->y, (chara->dir ? 0 : ALLEGRO_FLIP_HORIZONTAL));
+            al_draw_bitmap_region(chara->img[0], 128, 0, 64, 112, chara->x - camera_x, chara->y - camera_y, (chara->dir ? 0 : ALLEGRO_FLIP_HORIZONTAL));
         }
     }
 

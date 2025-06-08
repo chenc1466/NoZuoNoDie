@@ -37,6 +37,10 @@ Scene* New_Level1(int label) {
     pDerivedObj->spine_upsidedown_move_cnt = 0;
     pDerivedObj->spine_upsidedown_x = 1152;
     pDerivedObj->spine_upsidedown_y = -752;
+    //bck_btn
+    pDerivedObj->back_btn = New_Button(21, 21, 100, 100, 0, 0);
+    pDerivedObj->back_btn->img[0] = al_load_bitmap("assets/image/back_btn_0.png");
+    pDerivedObj->back_btn->img[1] = al_load_bitmap("assets/image/back_btn_1.png");
 
     pObj->pDerivedObj = pDerivedObj;
     // register character
@@ -144,13 +148,19 @@ void level1_update(Scene* self) {
         if (ele->dele)
             _Remove_elements(self, ele);
     }
-
+    // back button
+    Button_Update(Obj->back_btn);
+    if (Obj->back_btn->isPress)
+    {
+        self->scene_end = true;
+        window = 1;
+    }
 }
 
 void level1_draw(Scene* self) {
     Level1* Obj = ((Level1*)(self->pDerivedObj));
     al_draw_bitmap(Obj->background, 0, 0, 0);
-
+    Draw_Button(Obj->back_btn);
     // draw door //1168,544 -> 256,192
     double door_x = 1168 + (256-1168) * ((double)Obj->door_move_cnt/80);
     double door_y = 544 + (192-544) * ((double)Obj->door_move_cnt/80);

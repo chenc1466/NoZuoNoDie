@@ -1,7 +1,7 @@
 #include <allegro5/allegro_primitives.h>
 #include "stageselect.h"
 #include <stdbool.h>
-//#define DEMO
+#define DEMO
 /*
    [Stage Select function]
 */
@@ -52,6 +52,7 @@ void select_update(Scene *self)
     Select *Obj = ((Select *)(self->pDerivedObj));
     Button_Update(Obj->set_btn);
     Button_Update(Obj->back_btn);
+    #ifndef DEMO
     for(int i = 0; i < 4; i++)
     {
         Button_Update(Obj->lv_btn[i]);
@@ -69,6 +70,26 @@ void select_update(Scene *self)
             window = 7;
         }
     }   
+    #endif
+    #ifdef DEMO
+    for(int i = 0; i < 4; i++)
+    {
+        Button_Update(Obj->lv_btn[i]);
+        if(Obj->lv_btn[0]->isPress){
+            character_total_state = 1;
+            self->scene_end = true;
+            window = 3;
+        }
+        if(Obj->lv_btn[1]->isPress){
+            self->scene_end = true;
+            window = 6;
+        }
+        if(Obj->lv_btn[2]->isPress){
+            self->scene_end = true;
+            window = 7;
+        }
+    }   
+    #endif
     if (Obj->back_btn->isPress)
     {
         self->scene_end = true;

@@ -23,6 +23,7 @@ typedef struct _Level3
     int map[MAP_HEIGHT][MAP_WIDTH];
     ALLEGRO_BITMAP *tile_img;
     ALLEGRO_BITMAP *door_img_set;
+    Button *back_btn;
     int door_cnt;
     int door_state;
     int door_move_cnt;

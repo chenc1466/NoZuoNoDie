@@ -41,6 +41,10 @@ Scene* New_Level2(int label) {
     pObj->pDerivedObj = pDerivedObj;
     pDerivedObj->platform_move = 0;
     platform_state = 0;
+    //bck_btn
+    pDerivedObj->back_btn = New_Button(21, 21, 100, 100, 0, 0);
+    pDerivedObj->back_btn->img[0] = al_load_bitmap("assets/image/back_btn_0.png");
+    pDerivedObj->back_btn->img[1] = al_load_bitmap("assets/image/back_btn_1.png");
     // register character
     character_total_state = 2;
     _Register_elements(pObj, New_Character(Character_L));
@@ -164,12 +168,19 @@ void level2_update(Scene* self) {
         if (ele->dele)
             _Remove_elements(self, ele);
     }
+    // back button
+    Button_Update(Obj->back_btn);
+    if (Obj->back_btn->isPress)
+    {
+        self->scene_end = true;
+        window = 1;
+    }
 }
 
 void level2_draw(Scene* self) {
     Level2* Obj = ((Level2*)(self->pDerivedObj));
     al_draw_bitmap(Obj->background, 0, 0, 0);
-
+    Draw_Button(Obj->back_btn);
     // draw door
     al_draw_bitmap_region(Obj->door_img_set, 96 * (int)(Obj->door_cnt/20), 0, 96, 96, 0, 576, 0);
     

@@ -5,6 +5,7 @@
 #include <allegro5/allegro_image.h>
 #include "element.h"
 #include "../scene/level1.h"
+#include "../scene/camera.h"
 #include "../shapes/Shape.h"
 #include "../algif5/src/algif.h"
 #include <stdbool.h>
