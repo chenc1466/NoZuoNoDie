@@ -42,7 +42,7 @@ Scene* New_Level2(int label) {
     pDerivedObj->platform_move = 0;
     platform_state = 0;
     // register character
-    character_total_state = 2;
+   
     _Register_elements(pObj, New_Character(Character_L));
     // setting derived object function
     pObj->Update = level2_update;
@@ -97,6 +97,7 @@ void level2_update(Scene* self) {
                     Obj->door_cnt++;
                 }
                 else if(Obj->door_cnt == 80){
+                     character_total_state = 3;
                     self->scene_end = true;
                     window = 5;
                 }

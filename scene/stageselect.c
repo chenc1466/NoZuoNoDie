@@ -20,10 +20,12 @@ Scene *New_Stage(int label)
     pDerivedObj->lv_btn[1] = New_Button(681, 95, 527, 157, 0, 0);
     pDerivedObj->lv_btn[1]->img[0] = al_load_bitmap("assets/image/lv2_btn_0.png");
     pDerivedObj->lv_btn[1]->img[1] = al_load_bitmap("assets/image/lv2_btn_1.png");
+    pDerivedObj->lv_btn[1]->img[2] = al_load_bitmap("assets/image/lv2_lck_btn.png");
     // Level 03 Button
     pDerivedObj->lv_btn[2] = New_Button(72, 297, 527, 157, 0, 0);
     pDerivedObj->lv_btn[2]->img[0] = al_load_bitmap("assets/image/lv3_btn_0.png");
     pDerivedObj->lv_btn[2]->img[1] = al_load_bitmap("assets/image/lv3_btn_1.png");
+    pDerivedObj->lv_btn[2]->img[2] = al_load_bitmap("assets/image/lv3_lck_btn.png");
     // TBD Button
     pDerivedObj->lv_btn[3] = New_Button(681, 297, 527, 157, 0, 0);
     pDerivedObj->lv_btn[3]->img[0] = al_load_bitmap("assets/image/lv4_btn_0.png");
@@ -56,11 +58,11 @@ void select_update(Scene *self)
             self->scene_end = true;
             window = 3;
         }
-        if(Obj->lv_btn[1]->isPress){
+        if(Obj->lv_btn[1]->isPress && character_total_state == 2){
             self->scene_end = true;
             window = 6;
         }
-        if(Obj->lv_btn[2]->isPress){
+        if(Obj->lv_btn[2]->isPress && character_total_state == 3){
             self->scene_end = true;
             window = 7;
         }
@@ -84,10 +86,35 @@ void select_draw(Scene *self)
     al_draw_bitmap(Obj->background, 0, 0, 0);
     Draw_Button(Obj->set_btn);
     Draw_Button(Obj->back_btn);
+/*
+    Draw_Button(Obj->lv_btn[0]);
+    Draw_Button(Obj->lv_btn[1]);
+    Draw_Button(Obj->lv_btn[2]);
+    Draw_Button(Obj->lv_btn[3]);
+*/
+    switch(character_total_state){
+        case 1:
+            Draw_Button(Obj->lv_btn[0]);
+            al_draw_bitmap(Obj->lv_btn[1]->img[2], 681, 95, 0); 
+            al_draw_bitmap(Obj->lv_btn[2]->img[2], 72, 297, 0);
+            Draw_Button(Obj->lv_btn[3]);
+            break;
+        case 2:
+            Draw_Button(Obj->lv_btn[0]);
+            Draw_Button(Obj->lv_btn[1]);
+            al_draw_bitmap(Obj->lv_btn[2]->img[2], 72, 297, 0);
+            Draw_Button(Obj->lv_btn[3]);
+            break;
+        case 3:
+            Draw_Button(Obj->lv_btn[0]);
+            Draw_Button(Obj->lv_btn[1]);
+            Draw_Button(Obj->lv_btn[2]);
+            Draw_Button(Obj->lv_btn[3]);
+            break;
+        default:
+            break;
+    }
 
-    
-    for(int i = 0; i < 4; i++)
-        Draw_Button(Obj->lv_btn[i]);
 }
 void select_destroy(Scene *self)
 {
