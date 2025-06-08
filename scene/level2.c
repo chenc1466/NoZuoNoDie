@@ -61,7 +61,7 @@ void level2_update(Scene* self) {
     // Spine movement
     if(Obj->spine_upsidedown_state == 1) {
         if(Obj->spine_upsidedown_y < 640)
-            Obj->spine_upsidedown_move_cnt = 4;
+            Obj->spine_upsidedown_move_cnt = 1;
         else {
             Obj->spine_upsidedown_state = 2;
             Obj->spine_upsidedown_move_cnt = 0;
@@ -115,7 +115,7 @@ void level2_update(Scene* self) {
                 Obj->spine_upsidedown_state = 3;  
             }
             //gear
-            /*
+            
             if(dead_cnt == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, Obj->gear1_x, Obj->gear1_y, 112, 112)){
                 dead_cnt = 1;  
                 dead_type = 2;              
@@ -127,7 +127,7 @@ void level2_update(Scene* self) {
             if(dead_cnt == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, Obj->gear3_x, Obj->gear3_y, 112, 112)){
                 dead_cnt = 1;
                 dead_type = 2;
-            }*/
+            }
             //transform
             if(isColliding(chara->x, chara->y, chara->width, chara->height, 1024, 96, 96, 32)){
                 chara->x = 0;

@@ -18,9 +18,11 @@
 Scene* New_Level3(int label) {
     Level3* pDerivedObj = (Level3*)malloc(sizeof(Level3));
     Scene* pObj = New_Scene(label);
-    pDerivedObj->background = al_load_bitmap("assets/image/lv3.jpg");
+    pDerivedObj->background = al_load_bitmap("assets/image/lv3.png");
     pDerivedObj->door_img_set = al_load_bitmap("assets/image/door.png");
 
+    // 初始化相機
+    init_camera(&pDerivedObj->camera, 1280, 720);
 
     pObj->pDerivedObj = pDerivedObj;
     // register character
@@ -52,13 +54,21 @@ void level3_update(Scene* self) {
         if(allEle.arr[i]->label == Character_L)
         {
             Character *chara = ((Character *)(allEle.arr[i]->pDerivedObj));
-
-            if(isColliding(chara->x, chara->y, chara->width, chara->height, 1216, 544, 96, 96)){
-                Obj->door_state = 1;
-                self->scene_end = true;
-                window = 5;
-            }
-
+            printf("%d %d  ", chara->x, chara->y);
+            // 更新相機位置以跟隨角色
+            float target_x = chara->x - (Obj->camera.width / 2);
+            float target_y = chara->y - (Obj->camera.height / 2);
+            printf("%f %f ", target_x, target_y);
+            // 限制相機在地圖範圍內
+            if (target_x < 0) target_x = 0;
+            if (target_y < 0) target_y = 0;
+            if (target_x > 2560 - Obj->camera.width) target_x = 2560 - Obj->camera.width;
+            if (target_y > 720 - Obj->camera.height) target_y = 720 - Obj->camera.height;
+            printf("%f %f \n", target_x, target_y);
+            // 更新相機位置
+            Obj->camera.x = target_x;
+            Obj->camera.y = target_y;
+            //printf("%f %f \n", Obj->camera.x, Obj->camera.y);
             if(dead_cnt == 2){
                 dead_cnt = 0;
                 self->scene_end = true;
@@ -88,24 +98,37 @@ void level3_update(Scene* self) {
         if (ele->dele)
             _Remove_elements(self, ele);
     }
-
 }
 
 void level3_draw(Scene* self) {
     Level3* Obj = ((Level3*)(self->pDerivedObj));
-    al_draw_bitmap(Obj->background, 0, 0, 0);
+    
+    // 使用相機偏移繪製背景
+    al_draw_scaled_bitmap(Obj->background,
+                         0, 0, 2560, 720,  // 源圖片的完整大小
+                         -Obj->camera.x, -Obj->camera.y, 2560, 720,  // 目標位置和大小，加上相機偏移
+                         0);
 
-    // draw door //1168,544 -> 256,192
+    // 使用相機偏移繪製門
     double door_x = 1168 + (256-1168) * ((double)Obj->door_move_cnt/80);
     double door_y = 544 + (192-544) * ((double)Obj->door_move_cnt/80);
-    al_draw_bitmap_region(Obj->door_img_set, 96 * (int)(Obj->door_cnt/20), 0, 96, 96, door_x, door_y, 0);
+    al_draw_bitmap_region(Obj->door_img_set, 
+                         96 * (int)(Obj->door_cnt/20), 0, 96, 96, 
+                         door_x - Obj->camera.x, 
+                         door_y - Obj->camera.y, 0);
 
-    // draw character
+    // 使用相機偏移繪製角色
     ElementVec allEle = _Get_all_elements(self);
     for (int i = 0; i < allEle.len; i++)
     {
         Elements *ele = allEle.arr[i];
-        ele->Draw(ele);
+        if(ele->label == Character_L) {
+            Character *chara = ((Character *)(ele->pDerivedObj));
+            al_draw_bitmap(chara->img[chara->change], 
+                          chara->x - Obj->camera.x, 
+                          chara->y - Obj->camera.y, 
+                          chara->dir ? ALLEGRO_FLIP_HORIZONTAL : 0);
+        }
     }
 }
 

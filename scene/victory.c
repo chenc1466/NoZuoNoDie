@@ -1,5 +1,6 @@
 #include <allegro5/allegro_primitives.h>
 #include "victory.h"
+#include "../global.h"
 #include <stdbool.h>
 /*
    [Stage Select function]
@@ -41,8 +42,14 @@ void victory_update(Scene *self)
     }
     if (Obj->restart_btn->isPress)
     {
-        self->scene_end = true;
-        window = 3;
+        if(level_state == 1){
+            self->scene_end = true;
+            window = 2;
+        }
+        else if(level_state == 2){
+            self->scene_end = true;
+            window = 6;
+        }
     }
     return;
 }

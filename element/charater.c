@@ -15,6 +15,7 @@ int initial_y;
 int platform_cnt;
 int platform_check[10][4];  // Declare once
 int cnt_cnt = 1;
+int limit_x = 0;
 
 int cnt[5] = {0, 1, 2, 4, 16};
 
@@ -71,6 +72,7 @@ Elements *New_Character(int label)
             platform_cnt = 7;
             wall_cnt = 2;
             initial_y = 640;
+            limit_x = 1280;
             memcpy(platform_check, temp, sizeof(temp));
             break;
         }
@@ -89,6 +91,7 @@ Elements *New_Character(int label)
             platform_cnt = 8;
             wall_cnt = 2;
             initial_y = 672;
+            limit_x = 1280;
             memcpy(platform_check, temp, sizeof(temp));
             break;
         }
@@ -104,6 +107,7 @@ Elements *New_Character(int label)
             };
             wall_cnt = 0;
             initial_y = 670;
+            limit_x = 2560;
             memcpy(platform_check, temp, sizeof(temp));
             break;
         }
@@ -192,8 +196,8 @@ void Character_update(Elements *self)
 
     if(chara->x < 0)
         chara->x = 0;
-    if(chara->x+chara->width > 1280)
-        chara->x = 1280 - chara->width;
+    if(chara->x+chara->width > limit_x)
+        chara->x = limit_x - chara->width;
     // 處理跳躍 & 重力
     chara->velocity_y += chara->gravity;
     chara->y += chara->velocity_y;

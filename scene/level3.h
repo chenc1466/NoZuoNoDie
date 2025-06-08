@@ -8,6 +8,7 @@
 #include <allegro5/allegro_ttf.h>
 #include "../element/element.h"
 #include "../element/charater.h"
+#include "camera.h"
 
 #define MAP_WIDTH 80
 #define MAP_HEIGHT 46
@@ -25,6 +26,7 @@ typedef struct _Level3
     int door_cnt;
     int door_state;
     int door_move_cnt;
+    Camera camera;
 
 } Level3;
 Scene *New_Level3(int label);
