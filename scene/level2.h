@@ -22,9 +22,13 @@ typedef struct _Level2
     int map[MAP_HEIGHT][MAP_WIDTH];
     ALLEGRO_BITMAP *tile_img;
     ALLEGRO_BITMAP *door_img_set;
+    ALLEGRO_BITMAP *platform_img_set;
     int door_cnt;
     int door_state;
     int door_move_cnt;
+    int platform_move;
+    int platform_x;
+    int platform_y;
 
 
 } Level2;

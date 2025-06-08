@@ -17,6 +17,7 @@
 
 Scene* New_Level1(int label) {
     Level1* pDerivedObj = (Level1*)malloc(sizeof(Level1));
+
     Scene* pObj = New_Scene(label);
     pDerivedObj->background = al_load_bitmap("assets/image/lv1.png");
     pDerivedObj->door_img_set = al_load_bitmap("assets/image/door.png");
@@ -35,28 +36,10 @@ Scene* New_Level1(int label) {
     pDerivedObj->spine_upsidedown_move_cnt = 0;
     pDerivedObj->spine_upsidedown_x = 1152;
     pDerivedObj->spine_upsidedown_y = -752;
-    // Load map
-    FILE* file = fopen("assets/map/lv1_map.csv", "r");
-    if (!file) {
-        fprintf(stderr, "Error: Could not open map file\n");
-        return pObj;
-    }
 
-    char line[1024];
-    int row = 0;
-    while (fgets(line, sizeof(line), file) && row < MAP_HEIGHT) {
-        char* token = strtok(line, ",");
-        int col = 0;
-        while (token && col < MAP_WIDTH) {
-            pDerivedObj->map[row][col] = atoi(token);
-            token = strtok(NULL, ",");
-            col++;
-        }
-        row++;
-    }
-    fclose(file);
     pObj->pDerivedObj = pDerivedObj;
     // register character
+    character_total_state = 1;
     _Register_elements(pObj, New_Character(Character_L));
     // setting derived object function
     pObj->Update = level1_update;

@@ -18,31 +18,13 @@
 Scene* New_Level3(int label) {
     Level3* pDerivedObj = (Level3*)malloc(sizeof(Level3));
     Scene* pObj = New_Scene(label);
-    pDerivedObj->background = al_load_bitmap("assets/image/lv1.png");
+    pDerivedObj->background = al_load_bitmap("assets/image/lv3.jpg");
     pDerivedObj->door_img_set = al_load_bitmap("assets/image/door.png");
 
-    // Load map
-    FILE* file = fopen("assets/map/lv1_map.csv", "r");
-    if (!file) {
-        fprintf(stderr, "Error: Could not open map file\n");
-        return pObj;
-    }
 
-    char line[1024];
-    int row = 0;
-    while (fgets(line, sizeof(line), file) && row < MAP_HEIGHT) {
-        char* token = strtok(line, ",");
-        int col = 0;
-        while (token && col < MAP_WIDTH) {
-            pDerivedObj->map[row][col] = atoi(token);
-            token = strtok(NULL, ",");
-            col++;
-        }
-        row++;
-    }
-    fclose(file);
     pObj->pDerivedObj = pDerivedObj;
     // register character
+    character_total_state = 3;
     _Register_elements(pObj, New_Character(Character_L));
     // setting derived object function
     pObj->Update = level3_update;
@@ -71,22 +53,10 @@ void level3_update(Scene* self) {
         {
             Character *chara = ((Character *)(allEle.arr[i]->pDerivedObj));
 
-            if(Obj->door_state == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, 1216, 64, 96, 96)){
+            if(isColliding(chara->x, chara->y, chara->width, chara->height, 1216, 544, 96, 96)){
                 Obj->door_state = 1;
-            }
-            if(Obj->door_state == 2 && isColliding(chara->x, chara->y, chara->width, chara->height, 256, 192, 96, 96))
-            {
-                if(Obj->door_cnt < 80){
-                    Obj->door_cnt++;
-                }
-                else if(Obj->door_cnt == 80){
-                    self->scene_end = true;
-                    window = 5;
-                }
-            }
-            else if(Obj->door_cnt > 0)
-            {
-                Obj->door_cnt--;
+                self->scene_end = true;
+                window = 5;
             }
 
             if(dead_cnt == 2){

@@ -20,11 +20,19 @@ typedef enum CharacterType
     JUMP,
     DEAD
 } CharacterType;
+typedef enum CharacterState
+{
+    level1 = 0,
+    level2,
+    level3
+
+}CharacterState;
 typedef struct _Character
 {
     int x, y;
     int width, height;              // the width and height of image
     bool dir;                       // true: face to right, false: face to left
+    int total_state;                // know level
     int state;                      // the state of character
     ALLEGRO_BITMAP *img[3]; // gif for each state. 0: stop, 1: move, 2:attack
     ALLEGRO_SAMPLE_INSTANCE *atk_Sound;

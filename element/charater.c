@@ -1,4 +1,5 @@
 #include "charater.h"
+#include "../global.h"
 #include "../scene/sceneManager.h"
 #include "../shapes/Rectangle.h"
 #include "../algif5/src/algif.h"
@@ -8,16 +9,10 @@
 
 // Global variable for death state
 extern int dead_cnt;
-
-int platform_check[7][4] = {{912, 576, 160, 64},
-                        {1072, 192, 80, 384},
-                        {192, 288, 224, 64},
-                        {480, 160, 144, 64},
-                        {528, 400, 208, 64},
-                        {752, 112, 208, 64},
-                        {848, 464, 144, 64}
-                        };
-
+int wall_cnt;
+int initial_y;
+int platform_cnt;
+int platform_check[9][4];  // Declare once
 /* [Character function] */
 Elements *New_Character(int label)
 {
@@ -56,6 +51,60 @@ Elements *New_Character(int label)
     pDerivedObj->jump_force = -10.0f;
     pDerivedObj->is_jumping = false;
 
+
+    switch (character_total_state) {
+        case 1: {
+            int temp[7][4] = {
+                {912, 576, 160, 64},
+                {1072, 192, 80, 384},
+                {192, 288, 224, 64},
+                {480, 160, 144, 64},
+                {528, 400, 208, 64},
+                {752, 112, 208, 64},
+                {848, 464, 144, 64}
+            };
+            platform_cnt = 7;
+            wall_cnt = 2;
+            initial_y = 640;
+            memcpy(platform_check, temp, sizeof(temp));
+            break;
+        }
+        case 2: {
+            int temp[9][4] = {
+                {624, 576, 128, 96},
+                {352, 208, 224, 64},
+                {656, 336, 256, 64},
+                {752, 112, 240, 64},
+                {1152, 208, 96, 96},
+                {1040, 192, 96, 32}, 
+                {1040, 224, 96, 32}, 
+                {1040, 288, 96, 32}, 
+                {1040, 416, 96, 32}, 
+            };
+            platform_cnt = 9;
+            wall_cnt = 1;
+            initial_y = 670;
+            memcpy(platform_check, temp, sizeof(temp));
+            break;
+        }
+        case 3: {
+            int temp[7][4] = {
+                {912, 576, 160, 64},
+                {1072, 192, 80, 384},
+                {192, 288, 224, 64},
+                {480, 160, 144, 64},
+                {528, 400, 208, 64},
+                {752, 112, 208, 64},
+                {848, 464, 144, 64}
+            };
+            wall_cnt = 0;
+            initial_y = 670;
+            memcpy(platform_check, temp, sizeof(temp));
+            break;
+        }
+        default:
+            break;
+    }
     pObj->pDerivedObj = pDerivedObj;
     pObj->Draw = Character_draw;
     pObj->Update = Character_update;
@@ -137,6 +186,9 @@ void Character_update(Elements *self)
         }
     }
 
+    //level platform character moving
+
+
     if(chara->x < 0)
         chara->x = 0;
     if(chara->x+chara->width > 1280)
@@ -147,7 +199,7 @@ void Character_update(Elements *self)
 
 
 
-    for (int i = 0; i < 7; i++) {
+    for (int i = 0; i < platform_cnt; i++) {
         int px = platform_check[i][0];  // 平台 x
         int py = platform_check[i][1];  // 平台 y
         int pw = platform_check[i][2];  // 平台寬度
@@ -166,7 +218,7 @@ void Character_update(Elements *self)
         }
     }
 
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < wall_cnt; i++) {
         int px = platform_check[i][0];
         int py = platform_check[i][1];
         int pw = platform_check[i][2];
@@ -179,8 +231,8 @@ void Character_update(Elements *self)
         }
     }
 
-    if(chara->y > 640 - chara->height ){
-        chara->y =  640 - chara->height;
+    if(chara->y > initial_y - chara->height ){
+        chara->y = initial_y - chara->height;
         chara->is_jumping = false;
         chara->velocity_y = 0;
         chara->change = 0;

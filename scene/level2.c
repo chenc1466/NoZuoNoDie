@@ -18,33 +18,13 @@
 Scene* New_Level2(int label) {
     Level2* pDerivedObj = (Level2*)malloc(sizeof(Level2));
     Scene* pObj = New_Scene(label);
-    pDerivedObj->background = al_load_bitmap("assets/image/lv1.png");
+    pDerivedObj->background = al_load_bitmap("assets/image/lv2.jpg");
     pDerivedObj->door_img_set = al_load_bitmap("assets/image/door.png");
-
-    // spine 1
-
-    // Load map
-    FILE* file = fopen("assets/map/lv1_map.csv", "r");
-    if (!file) {
-        fprintf(stderr, "Error: Could not open map file\n");
-        return pObj;
-    }
-
-    char line[1024];
-    int row = 0;
-    while (fgets(line, sizeof(line), file) && row < MAP_HEIGHT) {
-        char* token = strtok(line, ",");
-        int col = 0;
-        while (token && col < MAP_WIDTH) {
-            pDerivedObj->map[row][col] = atoi(token);
-            token = strtok(NULL, ",");
-            col++;
-        }
-        row++;
-    }
-    fclose(file);
+    pDerivedObj->platform_img_set = al_load_bitmap("assets/image/pfm.jpg");
     pObj->pDerivedObj = pDerivedObj;
+    pDerivedObj->platform_move = 0;
     // register character
+    character_total_state = 2;
     _Register_elements(pObj, New_Character(Character_L));
     // setting derived object function
     pObj->Update = level2_update;
@@ -64,7 +44,23 @@ void level2_update(Scene* self) {
             Obj->door_state = 2;
         }
     }
-
+    if(platform_state == 1)
+    {
+        if(Obj->platform_move < 80)
+            Obj->platform_move++;
+        else {
+            platform_state = 3;
+        }
+    }
+    if(platform_state == 2){
+        Obj->platform_move--;
+        if(Obj->platform_move > 0){
+            Obj->platform_move--;
+        }
+        else{
+            platform_state = 3;
+        }
+    }
     ElementVec allEle = _Get_all_elements(self);
     for (int i = 0; i < allEle.len; i++)
     {
@@ -72,26 +68,27 @@ void level2_update(Scene* self) {
         if(allEle.arr[i]->label == Character_L)
         {
             Character *chara = ((Character *)(allEle.arr[i]->pDerivedObj));
-            
-          
-            if(Obj->door_state == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, 1216, 64, 96, 96)){
-                Obj->door_state = 1;
-            }
-            if(Obj->door_state == 2 && isColliding(chara->x, chara->y, chara->width, chara->height, 256, 192, 96, 96))
-            {
-                if(Obj->door_cnt < 80){
-                    Obj->door_cnt++;
-                }
-                else if(Obj->door_cnt == 80){
-                    self->scene_end = true;
-                    window = 5;
-                }
-            }
-            else if(Obj->door_cnt > 0)
-            {
-                Obj->door_cnt--;
-            }
 
+            //plaftform
+            if(platform_state == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, 1040, 448, 96, 256)){
+                platform_state = 1;
+            }
+            else if(platform_state == 1 && isColliding(chara->x, chara->y, chara->width, chara->height, 848, 272, 64, 64)){
+                platform_state = 2;
+            }
+            //character moving
+            if(platform_state == 1 && Obj->platform_move % 20 == 0){
+                chara->y = chara->y - 64;
+            }
+            printf("%d\n", chara->y);
+            // door
+            /*
+            if(isColliding(chara->x, chara->y, chara->width, chara->height, 0, 576, 96, 96)){
+                self->scene_end = true;
+                    window = 5;
+            }
+                    */
+            //dead
             if(dead_cnt == 2){
                 dead_cnt = 0;
                 self->scene_end = true;
@@ -133,6 +130,11 @@ void level2_draw(Scene* self) {
     double door_y = 544 + (192-544) * ((double)Obj->door_move_cnt/80);
     al_draw_bitmap_region(Obj->door_img_set, 96 * (int)(Obj->door_cnt/20), 0, 96, 96, door_x, door_y, 0);
 
+    //platform //1040, 448 -> 1040, 192
+    double platform_x = 1040;
+    double platform_y = 416;
+    al_draw_bitmap_region(Obj->platform_img_set, 96 * (int)(Obj->platform_move/20), 0, 96, 256, platform_x, platform_y, 0);
+    
     // draw character
     ElementVec allEle = _Get_all_elements(self);
     for (int i = 0; i < allEle.len; i++)
