@@ -1,6 +1,7 @@
 #include <allegro5/allegro_primitives.h>
 #include "gameover.h"
 #include <stdbool.h>
+#include "../global.h"
 /*
    [Stage Select function]
 */
@@ -8,9 +9,14 @@ Scene *New_Gameover(int label)
 {
     Gameover *pDerivedObj = (Gameover *)malloc(sizeof(Gameover));
     Scene *pObj = New_Scene(label);
-
     // Background
-    pDerivedObj->background = al_load_bitmap("assets/image/gameover.png");
+    printf("ff %d\n", dead_type);
+    if(dead_type == 1){
+        pDerivedObj->background = al_load_bitmap("assets/image/gameover1.png");
+    }
+    else if(dead_type == 2){
+        pDerivedObj->background = al_load_bitmap("assets/image/gameover2.png");
+    }
 
     pObj->pDerivedObj = pDerivedObj;
     // setting derived object function
@@ -41,8 +47,18 @@ void gameover_update(Scene *self)
     }
     if (Obj->restart_btn->isPress)
     {
-        self->scene_end = true;
-        window = 3;
+        if(level_state == 1){
+            self->scene_end = true;
+            window = 3;
+        }
+        else if(level_state == 2){
+            self->scene_end = true;
+            window = 6;
+        }
+        else if(level_state == 3){
+            self->scene_end = true;
+            window = 7;
+        }
     }
     return;
 }

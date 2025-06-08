@@ -20,6 +20,8 @@ Point mouse;
 bool debug_mode = true;
 int now_ctr = -1;
 int dead_cnt = 0;
+int dead_type = 0;
+int level_state = 0;
 int platform_state = 0;
 int character_total_state = 0;
 bool isColliding(int x1, int y1, int w1, int h1,

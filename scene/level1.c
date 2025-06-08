@@ -16,6 +16,7 @@
 //#define TILE_SIZE 16
 
 Scene* New_Level1(int label) {
+    level_state = 1;
     Level1* pDerivedObj = (Level1*)malloc(sizeof(Level1));
 
     Scene* pObj = New_Scene(label);
@@ -87,10 +88,12 @@ void level1_update(Scene* self) {
             }
 
             if(Obj->spine_state == 1 && isColliding(chara->x, chara->y, chara->width, chara->height, Obj->spine_x, Obj->spine_y - 32, 104, 160)){
-                dead_cnt = 1;                
+                dead_cnt = 1;   
+                dead_type = 1;
             }
             if(Obj->spine_upsidedown_state == 1 && isColliding(chara->x, chara->y, chara->width, chara->height, Obj->spine_upsidedown_x, Obj->spine_upsidedown_y - 48, 128, 64)){
-                dead_cnt = 1;                
+                dead_cnt = 1;  
+                dead_type = 1;
             }
 
             if(Obj->door_state == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, 1216, 64, 96, 96)){
@@ -173,6 +176,9 @@ void level1_destroy(Scene* self) {
     Level1* Obj = ((Level1*)(self->pDerivedObj));
     al_destroy_bitmap(Obj->background);
     al_destroy_bitmap(Obj->tile_img);
+    al_destroy_bitmap(Obj->door_img_set);
+    al_destroy_bitmap(Obj->spine_img);
+    al_destroy_bitmap(Obj->spine_upsidedown_img);
      // Destroy all elements
     ElementVec allEle = _Get_all_elements(self);
     for (int i = 0; i < allEle.len; i++) {

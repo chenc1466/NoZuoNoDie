@@ -22,16 +22,26 @@ typedef struct _Level2
     int map[MAP_HEIGHT][MAP_WIDTH];
     ALLEGRO_BITMAP *tile_img;
     ALLEGRO_BITMAP *door_img_set;
+    ALLEGRO_BITMAP *spine_upsidedown_img;
     ALLEGRO_BITMAP *gear1_img;
     ALLEGRO_BITMAP *gear2_img;
     ALLEGRO_BITMAP *gear3_img;
     ALLEGRO_BITMAP *platform_img_set;
     int door_cnt;
-    int door_state;
     int door_move_cnt;
     int platform_move;
     int platform_x;
     int platform_y;
+    int spine_upsidedown_x;
+    int spine_upsidedown_y;
+    int spine_upsidedown_state;
+    int spine_upsidedown_move_cnt;
+    int gear1_x;
+    int gear1_y;
+    int gear2_x;
+    int gear2_y;
+    int gear3_x;
+    int gear3_y;
     double gear_angle;
 
 } Level2;

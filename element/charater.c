@@ -266,6 +266,7 @@ void Character_draw(Elements *self)
     else if(chara->state == DEAD){
         al_draw_bitmap(chara->img[2], chara->x, chara->y, 1);
         dead_cnt = 2;
+
     }
 
 }

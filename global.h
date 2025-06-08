@@ -35,6 +35,8 @@ extern int now_bgm;
 extern double now_vol;
 extern int now_ctr;
 extern int dead_cnt;
+extern int dead_type;
+extern int level_state;
 extern int character_total_state;
 extern int platform_state;
 bool isColliding(int x1, int y1, int w1, int h1,

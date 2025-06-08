@@ -16,15 +16,29 @@
 //#define TILE_SIZE 16
 
 Scene* New_Level2(int label) {
+    level_state = 2;
     Level2* pDerivedObj = (Level2*)malloc(sizeof(Level2));
     Scene* pObj = New_Scene(label);
-    pDerivedObj->background = al_load_bitmap("assets/image/lv2.jpg");
+    pDerivedObj->background = al_load_bitmap("assets/image/lv2.png");
     pDerivedObj->door_img_set = al_load_bitmap("assets/image/door.png");
     pDerivedObj->platform_img_set = al_load_bitmap("assets/image/pfm.jpg");
+    //spine
+    pDerivedObj->spine_upsidedown_img = al_load_bitmap("assets/image/spine_upsidedown.png");
+    pDerivedObj->spine_upsidedown_x = 752;
+    pDerivedObj->spine_upsidedown_y = 384;
+    pDerivedObj->spine_upsidedown_state = 0;
+    pDerivedObj->spine_upsidedown_move_cnt = 0;
+    //gear
     pDerivedObj->gear1_img = al_load_bitmap("assets/image/gear.png");
     pDerivedObj->gear2_img = al_load_bitmap("assets/image/gear.png");
     pDerivedObj->gear3_img = al_load_bitmap("assets/image/gear.png");
     pDerivedObj->gear_angle = 0;
+    pDerivedObj->gear1_x = 352;
+    pDerivedObj->gear1_y = 624;
+    pDerivedObj->gear2_x = 938;
+    pDerivedObj->gear2_y = 624;
+    pDerivedObj->gear3_x = 1136;
+    pDerivedObj->gear3_y = 624;
     pObj->pDerivedObj = pDerivedObj;
     pDerivedObj->platform_move = 0;
     // register character
@@ -41,24 +55,23 @@ void level2_update(Scene* self) {
 
     Level2* Obj = ((Level2*)(self->pDerivedObj));
     // gear
+    printf("%d %d\n", dead_cnt, Obj->spine_upsidedown_state);
     Obj->gear_angle ++;
     if(Obj->gear_angle > 3600)  Obj->gear_angle = 0;
-    // door
-    if(Obj->door_state == 1)
-    {
-        Obj->door_move_cnt++;
-        if(Obj->door_move_cnt < 80)
-            Obj->door_move_cnt++;
-        else {
-            Obj->door_state = 2;
-        }
-    }
     if(platform_state == 1)
     {
         if(Obj->platform_move < 80)
             Obj->platform_move++;
         else {
             platform_state = 3;
+        }
+    }
+    if(Obj->spine_upsidedown_state == 1){
+        if(Obj->spine_upsidedown_y < 640)
+            Obj->spine_upsidedown_move_cnt = 4;
+        else {
+            Obj->spine_upsidedown_state = 2;
+            Obj->spine_upsidedown_move_cnt = 0;
         }
     }
     if(platform_state == 2){
@@ -77,7 +90,42 @@ void level2_update(Scene* self) {
         if(allEle.arr[i]->label == Character_L)
         {
             Character *chara = ((Character *)(allEle.arr[i]->pDerivedObj));
-
+            // door
+            if(isColliding(chara->x, chara->y, chara->width, chara->height, 0, 576, 96, 96))
+            {
+                if(Obj->door_cnt < 80){
+                    Obj->door_cnt++;
+                }
+                else if(Obj->door_cnt == 80){
+                    self->scene_end = true;
+                    window = 5;
+                }
+            }
+            else if(Obj->door_cnt > 0)
+            {
+                Obj->door_cnt--;
+            }
+            //spine
+            if(Obj->spine_upsidedown_state == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, 784, 640, 32, 16)){
+                Obj->spine_upsidedown_state = 1;
+            }
+            else if(Obj->spine_upsidedown_state == 2 && isColliding(chara->x, chara->y, chara->width, chara->height, 752, 640, 128, 32)){
+                dead_cnt = 1;  
+                dead_type = 1;
+            }
+            //gear
+            if(dead_cnt == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, Obj->gear1_x, Obj->gear1_y, 112, 112)){
+                dead_cnt = 1;  
+                dead_type = 2;              
+            }
+            if(dead_cnt == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, Obj->gear2_x, Obj->gear2_y, 112, 112)){
+                dead_cnt = 1;
+                dead_type = 2;
+            }
+            if(dead_cnt == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, Obj->gear3_x, Obj->gear3_y, 112, 112)){
+                dead_cnt = 1;
+                dead_type = 2;
+            }
             //plaftform
             if(platform_state == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, 1040, 448, 96, 256)){
                 platform_state = 1;
@@ -89,16 +137,9 @@ void level2_update(Scene* self) {
             if(platform_state == 1 && Obj->platform_move % 20 == 0){
                 chara->y = chara->y - 64;
             }
-            printf("%d\n", chara->y);
-            // door
-            /*
-            if(isColliding(chara->x, chara->y, chara->width, chara->height, 0, 576, 96, 96)){
-                self->scene_end = true;
-                    window = 5;
-            }
-                    */
             //dead
             if(dead_cnt == 2){
+
                 dead_cnt = 0;
                 self->scene_end = true;
                 window = 4;
@@ -134,11 +175,11 @@ void level2_draw(Scene* self) {
     Level2* Obj = ((Level2*)(self->pDerivedObj));
     al_draw_bitmap(Obj->background, 0, 0, 0);
 
-    // draw door //1168,544 -> 256,192
-    double door_x = 1168 + (256-1168) * ((double)Obj->door_move_cnt/80);
-    double door_y = 544 + (192-544) * ((double)Obj->door_move_cnt/80);
-    al_draw_bitmap_region(Obj->door_img_set, 96 * (int)(Obj->door_cnt/20), 0, 96, 96, door_x, door_y, 0);
-
+    // draw door //0,576
+    al_draw_bitmap_region(Obj->door_img_set, 96 * (int)(Obj->door_cnt/20), 0, 96, 96, 0, 576, 0);
+    // draw upsidedown spine
+    Obj->spine_upsidedown_y = Obj->spine_upsidedown_y + Obj->spine_upsidedown_move_cnt;
+    al_draw_bitmap(Obj->spine_upsidedown_img, Obj->spine_upsidedown_x, Obj->spine_upsidedown_y, 0);
     // draw gear
     al_draw_rotated_bitmap(Obj->gear1_img, 56, 56, 352 + 56, 624 + 56, Obj->gear_angle/10, 0);
     al_draw_rotated_bitmap(Obj->gear2_img, 56, 56, 938 + 56, 624 + 56, Obj->gear_angle/10, 0);
@@ -161,7 +202,11 @@ void level2_draw(Scene* self) {
 void level2_destroy(Scene* self) {
     Level2* Obj = ((Level2*)(self->pDerivedObj));
     al_destroy_bitmap(Obj->background);
-    al_destroy_bitmap(Obj->tile_img);
+    al_destroy_bitmap(Obj->door_img_set);
+    al_destroy_bitmap(Obj->gear1_img);
+    al_destroy_bitmap(Obj->gear2_img);
+    al_destroy_bitmap(Obj->gear3_img);
+    al_destroy_bitmap(Obj->platform_img_set);
      // Destroy all elements
     ElementVec allEle = _Get_all_elements(self);
     for (int i = 0; i < allEle.len; i++) {
