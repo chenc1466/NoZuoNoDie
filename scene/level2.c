@@ -14,7 +14,7 @@
 //#define MAP_WIDTH 80
 //#define MAP_HEIGHT 46
 //#define TILE_SIZE 16
-
+int cnt[5] = {0, 1, 2, 4, 16};
 Scene* New_Level2(int label) {
     Level2* pDerivedObj = (Level2*)malloc(sizeof(Level2));
     Scene* pObj = New_Scene(label);
@@ -57,19 +57,8 @@ void level2_update(Scene* self) {
     {
         if(Obj->platform_move < 80)
             Obj->platform_move++;
-        else {
-            platform_state = 3;
-        }
     }
-    if(platform_state == 2){
-        Obj->platform_move--;
-        if(Obj->platform_move > 0){
-            Obj->platform_move--;
-        }
-        else{
-            platform_state = 3;
-        }
-    }
+
     ElementVec allEle = _Get_all_elements(self);
     for (int i = 0; i < allEle.len; i++)
     {
@@ -79,17 +68,14 @@ void level2_update(Scene* self) {
             Character *chara = ((Character *)(allEle.arr[i]->pDerivedObj));
 
             //plaftform
-            if(platform_state == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, 1040, 448, 96, 256)){
+            if(platform_state == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, 1040, 540, 96, 112)){
                 platform_state = 1;
             }
             else if(platform_state == 1 && isColliding(chara->x, chara->y, chara->width, chara->height, 848, 272, 64, 64)){
-                platform_state = 2;
+                platform_state = 0;
             }
             //character moving
-            if(platform_state == 1 && Obj->platform_move % 20 == 0){
-                chara->y = chara->y - 64;
-            }
-            printf("%d\n", chara->y);
+
             // door
             /*
             if(isColliding(chara->x, chara->y, chara->width, chara->height, 0, 576, 96, 96)){
@@ -145,10 +131,18 @@ void level2_draw(Scene* self) {
     al_draw_rotated_bitmap(Obj->gear3_img, 56, 56, 1136 + 56, 624 + 56, Obj->gear_angle/10, 0);
 
     //platform //1040, 448 -> 1040, 192
+    
     double platform_x = 1040;
     double platform_y = 416;
-    al_draw_bitmap_region(Obj->platform_img_set, 96 * (int)(Obj->platform_move/20), 0, 96, 256, platform_x, platform_y, 0);
+    if(platform_state == 0){
+        al_draw_bitmap_region(Obj->platform_img_set, 0, 0, 96, 256, platform_x, platform_y, 0);
+    }
+    if(platform_state == 1){
+        al_draw_bitmap_region(Obj->platform_img_set, 384, 0, 96, 256, platform_x, platform_y, 0);
+    }
+
     
+    printf("%d\n", (4 - (int)(Obj->platform_move/20)));
     // draw character
     ElementVec allEle = _Get_all_elements(self);
     for (int i = 0; i < allEle.len; i++)
