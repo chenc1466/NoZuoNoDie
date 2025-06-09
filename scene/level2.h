@@ -12,6 +12,9 @@
 #define MAP_WIDTH 80
 #define MAP_HEIGHT 46
 #define TILE_SIZE 32
+
+extern int portal_appear;
+extern int portal_cnt;
 /*
    [Set object]
 */
@@ -22,6 +25,7 @@ typedef struct _Level2
     int map[MAP_HEIGHT][MAP_WIDTH];
     ALLEGRO_BITMAP *tile_img;
     ALLEGRO_BITMAP *door_img_set;
+    ALLEGRO_BITMAP *spine_img;
     ALLEGRO_BITMAP *spine_upsidedown_img;
     ALLEGRO_BITMAP *portal1_img;
     ALLEGRO_BITMAP *portal2_img;
@@ -46,7 +50,6 @@ typedef struct _Level2
     int gear2_y;
     int gear3_x;
     int gear3_y;
-    int portal_appear;
     double gear_angle;
     
     // Platform properties

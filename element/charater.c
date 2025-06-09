@@ -5,6 +5,7 @@
 #include "../algif5/src/algif.h"
 #include "../scene/level1.h"
 #include "../scene/level2.h"
+#include "../scene/level3.h"
 #include <stdio.h>
 #include <stdbool.h>
 
@@ -30,6 +31,7 @@ Elements *New_Character(int label)
     pDerivedObj->img[1] = al_load_bitmap("assets/image/jump.png");
     pDerivedObj->img[2] = al_load_bitmap("assets/image/dead.png");
     pDerivedObj->img[3] = al_load_bitmap("assets/image/bomb.png");
+    pDerivedObj->img[4] = al_load_bitmap("assets/image/transport.png");
     pDerivedObj->width = 64;
     pDerivedObj->height = 112;
     pDerivedObj->chara_cnt = 0;
@@ -260,8 +262,18 @@ void Character_draw(Elements *self)
 
     // printf("chara->x: %d, chara->y: %d ", chara->x, chara->y);
     // printf("camera_x: %d, camera_y: %d\n", camera_x, camera_y);
+
+    if(portal_appear == 2){
+        al_draw_bitmap_region(chara->img[4], 64 * (portal_cnt/20), 0, 64, 112, chara->x - camera_x, chara->y - camera_y, 1);
+    }
+    else if(portal_appear == 3){
+        chara->x = 16;
+        chara->y = 16;
+        al_draw_bitmap_region(chara->img[0], 0, 0, 64, 112, chara->x - camera_x, chara->y - camera_y, 1);
+        portal_appear = 4;
+    }
     
-    if (chara->state == STOP){
+    else if (chara->state == STOP){
         if(chara->change == 0){
             al_draw_bitmap_region(chara->img[0], 0, 0, 64, 112, chara->x - camera_x, chara->y - camera_y, (chara->dir ? 0 : ALLEGRO_FLIP_HORIZONTAL));
         }

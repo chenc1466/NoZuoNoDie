@@ -14,6 +14,8 @@
 //#define MAP_WIDTH 80
 //#define MAP_HEIGHT 46
 //#define TILE_SIZE 16
+int portal_appear = 0;
+int portal_cnt = 0;
 Scene* New_Level2(int label) {
     level_state = 2;
     Level2* pDerivedObj = (Level2*)malloc(sizeof(Level2));
@@ -23,6 +25,7 @@ Scene* New_Level2(int label) {
     pDerivedObj->platform_img_set = al_load_bitmap("assets/image/pfm.jpg");
     //spine
     pDerivedObj->spine_upsidedown_img = al_load_bitmap("assets/image/spine_upsidedown.png");
+    pDerivedObj->spine_img = al_load_bitmap("assets/image/spine.png");
     pDerivedObj->spine_upsidedown_x = 752;
     pDerivedObj->spine_upsidedown_y = 384;
     pDerivedObj->spine_upsidedown_state = 0;
@@ -30,7 +33,8 @@ Scene* New_Level2(int label) {
     //portal
     pDerivedObj->portal1_img = al_load_bitmap("assets/image/portal.png");
     pDerivedObj->portal2_img = al_load_bitmap("assets/image/portal.png");
-    pDerivedObj->portal_appear = 0;
+    portal_appear = 0;
+    portal_cnt = 0;
     //gear
     pDerivedObj->gear1_img = al_load_bitmap("assets/image/gear.png");
     pDerivedObj->gear2_img = al_load_bitmap("assets/image/gear.png");
@@ -80,6 +84,13 @@ void level2_update(Scene* self) {
         }
     }
 
+    if(portal_appear == 2){
+        portal_cnt++;
+        if(portal_cnt >= 100){
+            portal_appear = 3;
+        }
+    }
+
     ElementVec allEle = _Get_all_elements(self);
     for (int i = 0; i < allEle.len; i++) {
         allEle.arr[i]->Update(allEle.arr[i]);
@@ -121,7 +132,7 @@ void level2_update(Scene* self) {
             //spine
             if(Obj->spine_upsidedown_state == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, 784, 640, 32, 16)){
                 Obj->spine_upsidedown_state = 1;
-                Obj->portal_appear = 1;
+                portal_appear = 1;
             }
             else if(Obj->spine_upsidedown_state == 2 && isColliding(chara->x, chara->y, chara->width, chara->height, 752, 640, 128, 32)){
                 dead_cnt = 1;  
@@ -145,9 +156,8 @@ void level2_update(Scene* self) {
                 dead_type = 2;
             }
             //transform
-            if(isColliding(chara->x, chara->y, chara->width, chara->height, 1200, 96, 96, 32)){
-                chara->x = 0;
-                chara->y = 0;
+            if(portal_appear == 1 && isColliding(chara->x, chara->y, chara->width, chara->height, 1200, 96, 96, 32)){
+                portal_appear = 2;
             }
             //dead
             if(dead_cnt == 2){
@@ -204,7 +214,7 @@ void level2_draw(Scene* self) {
     al_draw_bitmap_region(Obj->door_img_set, 96 * (int)(Obj->door_cnt/20), 0, 96, 96, 0, 576, 0);
 
     // draw portal
-    if(Obj->portal_appear == 1){
+    if(portal_appear >= 1){
         al_draw_bitmap(Obj->portal1_img, 16, 32, 0);
         al_draw_bitmap(Obj->portal2_img, 1200, 96, 0);
     }
@@ -216,7 +226,12 @@ void level2_draw(Scene* self) {
 
     // draw upsidedown spine
     Obj->spine_upsidedown_y = Obj->spine_upsidedown_y + Obj->spine_upsidedown_move_cnt;
-    al_draw_bitmap(Obj->spine_upsidedown_img, Obj->spine_upsidedown_x, Obj->spine_upsidedown_y, 0);
+    if(Obj->spine_upsidedown_state == 2){
+        al_draw_bitmap(Obj->spine_img, Obj->spine_upsidedown_x, Obj->spine_upsidedown_y, 0);
+    }
+    else{
+        al_draw_bitmap(Obj->spine_upsidedown_img, Obj->spine_upsidedown_x, Obj->spine_upsidedown_y, 0);
+    }
     
     // draw gear
     al_draw_rotated_bitmap(Obj->gear1_img, 56, 56, 352 + 56, 624 + 56, Obj->gear_angle/10, 0);

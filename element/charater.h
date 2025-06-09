@@ -35,7 +35,7 @@ typedef struct _Character
     bool dir;                       // true: face to right, false: face to left
     int total_state;                // know level
     int state;                      // the state of character
-    ALLEGRO_BITMAP *img[4]; // gif for each state. 0: stop, 1: move, 2:dead, 3:bomb
+    ALLEGRO_BITMAP *img[5]; // gif for each state. 0: stop, 1: move, 2:dead, 3:bomb, 4:transport
     ALLEGRO_SAMPLE_INSTANCE *atk_Sound;
     int anime;      // counting the time of animation
     int anime_time; // indicate how long the animation
