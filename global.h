@@ -46,6 +46,7 @@ extern int camera_y;
 extern int finish_level;
 extern int canyon1_y;
 extern int canyon2_y;
+extern int current_character;
 bool isColliding(int x1, int y1, int w1, int h1,
                  int x2, int y2, int w2, int h2);
 #endif

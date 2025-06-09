@@ -93,7 +93,7 @@ void select_update(Scene *self)
     if (Obj->back_btn->isPress)
     {
         self->scene_end = true;
-        window = 0;
+        window = 8;
     }
     if (Obj->set_btn->isPress)
     {

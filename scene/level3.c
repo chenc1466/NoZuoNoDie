@@ -357,6 +357,8 @@ void level3_destroy(Scene* self) {
     al_destroy_bitmap(Obj->spine3_img);
     al_destroy_bitmap(Obj->spine4_img);
     al_destroy_bitmap(Obj->spine5_img);
+    al_destroy_bitmap(Obj->canyon1_img);
+    al_destroy_bitmap(Obj->canyon2_img);
     al_destroy_bitmap(Obj->button1_img);
     al_destroy_bitmap(Obj->button1_pressed_img);
     al_destroy_bitmap(Obj->button2_img);

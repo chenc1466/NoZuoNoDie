@@ -43,7 +43,7 @@ void menu_update(Scene *self)
     if (Obj->new_btn->isPress)
     {
         self->scene_end = true;
-        window = 1;
+        window = 8;
     }
     
     return;

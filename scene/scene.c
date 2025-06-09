@@ -111,7 +111,6 @@ bool mouseInRect(int x, int y, int w, int h){
 Button *New_Button(int x, int y, int w, int h, int r, bool isCircle){
     Button *pObj;
     pObj = (Button *)malloc(sizeof(Button));
-    // setting object member
     pObj->x = x;
     pObj->y = y;
     pObj->w = w;
@@ -120,11 +119,13 @@ Button *New_Button(int x, int y, int w, int h, int r, bool isCircle){
     pObj->isPress = false;
     pObj->isHover = false;
     pObj->isCircle = isCircle;
+    pObj->isDown = false; // 新增
     return pObj;
 }
 
 void Draw_Button(Button *button){
     al_draw_bitmap(button->img[button->isHover], button->x, button->y, 0);
+
 }
 
 bool mouseInButton(Button *button){
@@ -134,17 +135,26 @@ bool mouseInButton(Button *button){
         return mouseInRect(button->x, button->y, button->w, button->h);
     }
 }
-
 bool Button_Update(Button *button){
     if(mouseInButton(button)){
         button->isHover = true;
-        if(mouse_state[1]){
+        // 滑鼠左鍵剛按下時，記錄 isDown
+        if(mouse_state[1] && !button->isDown){
+            button->isDown = true;
+        }
+        // 滑鼠左鍵剛放開時，且之前有按下，才算按鈕被點擊
+        if(!mouse_state[1] && button->isDown){
             button->isPress = true;
+            button->isDown = false;
         }else{
             button->isPress = false;
         }
     }else{
         button->isHover = false;
+        // 如果滑鼠離開按鈕範圍就取消 isDown
+        if(!mouse_state[1]){
+            button->isDown = false;
+        }
         button->isPress = false;
     }
     return button->isPress;

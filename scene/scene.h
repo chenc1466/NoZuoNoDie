@@ -7,6 +7,7 @@
 typedef enum SceneType
 {
     Menu_L = 0,
+    Change_L,
     Stage_L,
     Set_L,
     GameScene_L,
@@ -62,6 +63,7 @@ typedef struct _Button
     bool isCircle;
     bool isHover;
     bool isPress;
+    bool isDown; // 新增
     ALLEGRO_BITMAP *img[3];
 }Button;
 Scene *New_Scene(int label);

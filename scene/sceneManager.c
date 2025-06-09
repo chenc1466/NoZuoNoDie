@@ -8,6 +8,7 @@
 #include "victory.h"
 #include "level2.h"
 #include "level3.h"
+#include "change.h"
 
 Scene *scene = NULL;
 void create_scene(SceneType type)
@@ -40,6 +41,9 @@ void create_scene(SceneType type)
         break;
     case Level3_L:
         scene = New_Level3(Level3_L);
+        break;
+    case Change_L:
+        scene = New_Change(Change_L);
         break;
     default:
         break;

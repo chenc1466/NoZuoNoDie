@@ -27,11 +27,34 @@ Elements *New_Character(int label)
     Elements *pObj = New_Elements(label);
 
     // load character image
-    pDerivedObj->img[0] = al_load_bitmap("assets/image/player.png");
-    pDerivedObj->img[1] = al_load_bitmap("assets/image/jump.png");
-    pDerivedObj->img[2] = al_load_bitmap("assets/image/dead.png");
-    pDerivedObj->img[3] = al_load_bitmap("assets/image/bomb.png");
-    pDerivedObj->img[4] = al_load_bitmap("assets/image/transport.png");
+    if(current_character == 0){
+        pDerivedObj->img[0] = al_load_bitmap("assets/image/character/player_black.png");
+        pDerivedObj->img[1] = al_load_bitmap("assets/image/character/jump_black.png");
+        pDerivedObj->img[2] = al_load_bitmap("assets/image/character/dead_black.png");
+        pDerivedObj->img[3] = al_load_bitmap("assets/image/character/bomb_black.png");
+        pDerivedObj->img[4] = al_load_bitmap("assets/image/character/transport_black.png");
+    }
+    else if(current_character == 1){
+        pDerivedObj->img[0] = al_load_bitmap("assets/image/character/player_green.png");
+        pDerivedObj->img[1] = al_load_bitmap("assets/image/character/jump_green.png");
+        pDerivedObj->img[2] = al_load_bitmap("assets/image/character/dead_green.png");
+        pDerivedObj->img[3] = al_load_bitmap("assets/image/character/bomb_green.png");
+        pDerivedObj->img[4] = al_load_bitmap("assets/image/character/transport_green.png");
+    }
+    else if(current_character == 2){
+        pDerivedObj->img[0] = al_load_bitmap("assets/image/character/player_blue.png");
+        pDerivedObj->img[1] = al_load_bitmap("assets/image/character/jump_blue.png");
+        pDerivedObj->img[2] = al_load_bitmap("assets/image/character/dead_blue.png");
+        pDerivedObj->img[3] = al_load_bitmap("assets/image/character/bomb_blue.png");
+        pDerivedObj->img[4] = al_load_bitmap("assets/image/character/transport_blue.png");
+    }
+    else if(current_character == 3){
+        pDerivedObj->img[0] = al_load_bitmap("assets/image/character/player_yellow.png");
+        pDerivedObj->img[1] = al_load_bitmap("assets/image/character/jump_yellow.png");
+        pDerivedObj->img[2] = al_load_bitmap("assets/image/character/dead_yellow.png");
+        pDerivedObj->img[3] = al_load_bitmap("assets/image/character/bomb_yellow.png");
+        pDerivedObj->img[4] = al_load_bitmap("assets/image/character/transport_yellow.png");
+    }
     pDerivedObj->width = 64;
     pDerivedObj->height = 112;
     pDerivedObj->chara_cnt = 0;
@@ -61,7 +84,7 @@ Elements *New_Character(int label)
     pDerivedObj->is_jumping = false;
 
 
-    switch (character_total_state) {
+    switch (level_state) {
         case 1: {
             int temp[7][4] = {
                 {912, 576, 160, 64},
