@@ -24,7 +24,10 @@ Scene* New_Level3(int label) {
     pDerivedObj->back_btn = New_Button(21, 21, 100, 100, 0, 0);
     pDerivedObj->back_btn->img[0] = al_load_bitmap("assets/image/back_btn_0.png");
     pDerivedObj->back_btn->img[1] = al_load_bitmap("assets/image/back_btn_1.png");
-
+    //restart_btn
+    pDerivedObj->restart_btn = New_Button(121, 21, 100, 100, 0, 0);
+    pDerivedObj->restart_btn->img[0] = al_load_bitmap("assets/image/rst_btn_0.png");
+    pDerivedObj->restart_btn->img[1] = al_load_bitmap("assets/image/rst_btn_1.png");
     // 初始化相機
     init_camera(&pDerivedObj->camera, 1280, 720);
 
@@ -111,6 +114,13 @@ void level3_update(Scene* self) {
         self->scene_end = true;
         window = 1;
     }
+    // restart button
+    Button_Update(Obj->restart_btn);
+    if (Obj->restart_btn->isPress)
+    {
+        self->scene_end = true;
+        window = 7;
+    }
 }
 
 void level3_draw(Scene* self) {
@@ -121,7 +131,12 @@ void level3_draw(Scene* self) {
                          0, 0, 2560, 720,  // 源圖片的完整大小
                          -Obj->camera.x, -Obj->camera.y, 2560, 720,  // 目標位置和大小，加上相機偏移
                          0);
+
+    // back button
     Draw_Button(Obj->back_btn);
+    // restart button
+    Draw_Button(Obj->restart_btn);
+    
     // 使用相機偏移繪製門
     double door_x = 1168 + (256-1168) * ((double)Obj->door_move_cnt/80);
     double door_y = 544 + (192-544) * ((double)Obj->door_move_cnt/80);
@@ -163,6 +178,26 @@ void level3_destroy(Scene* self) {
         if (ele && ele->Destroy) {
             ele->Destroy(ele);
         }
+    }
+    if (Obj->restart_btn){
+        for (int i = 0; i < 2; i++) {
+            if (Obj->restart_btn->img[i]) {
+                al_destroy_bitmap(Obj->restart_btn->img[i]);
+                Obj->restart_btn->img[i] = NULL;
+            }
+        }
+        free(Obj->restart_btn);
+        Obj->restart_btn = NULL;
+    }
+    if (Obj->back_btn){
+        for (int i = 0; i < 2; i++) {
+            if (Obj->back_btn->img[i]) {
+                al_destroy_bitmap(Obj->back_btn->img[i]);
+                Obj->back_btn->img[i] = NULL;
+            }
+        }
+        free(Obj->back_btn);
+        Obj->back_btn = NULL;
     }
     // free the scene objects
     free(Obj);

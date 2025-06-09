@@ -24,6 +24,7 @@ typedef struct _Level3
     ALLEGRO_BITMAP *tile_img;
     ALLEGRO_BITMAP *door_img_set;
     Button *back_btn;
+    Button *restart_btn;
     int door_cnt;
     int door_state;
     int door_move_cnt;

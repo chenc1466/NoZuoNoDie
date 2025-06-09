@@ -45,6 +45,10 @@ Scene* New_Level2(int label) {
     pDerivedObj->back_btn = New_Button(21, 21, 100, 100, 0, 0);
     pDerivedObj->back_btn->img[0] = al_load_bitmap("assets/image/back_btn_0.png");
     pDerivedObj->back_btn->img[1] = al_load_bitmap("assets/image/back_btn_1.png");
+    //restart_btn
+    pDerivedObj->restart_btn = New_Button(121, 21, 100, 100, 0, 0);
+    pDerivedObj->restart_btn->img[0] = al_load_bitmap("assets/image/rst_btn_0.png");
+    pDerivedObj->restart_btn->img[1] = al_load_bitmap("assets/image/rst_btn_1.png");
     // register character
     character_total_state = 2;
     _Register_elements(pObj, New_Character(Character_L));
@@ -175,15 +179,28 @@ void level2_update(Scene* self) {
         self->scene_end = true;
         window = 1;
     }
+    // restart button
+    Button_Update(Obj->restart_btn);
+    if (Obj->restart_btn->isPress)
+    {
+        self->scene_end = true;
+        window = 6;
+    }
 }
 
 void level2_draw(Scene* self) {
     Level2* Obj = ((Level2*)(self->pDerivedObj));
     al_draw_bitmap(Obj->background, 0, 0, 0);
-    Draw_Button(Obj->back_btn);
+    
+
     // draw door
     al_draw_bitmap_region(Obj->door_img_set, 96 * (int)(Obj->door_cnt/20), 0, 96, 96, 0, 576, 0);
-    
+
+    // back button
+    Draw_Button(Obj->back_btn);
+    // restart button
+    Draw_Button(Obj->restart_btn);
+
     // draw upsidedown spine
     Obj->spine_upsidedown_y = Obj->spine_upsidedown_y + Obj->spine_upsidedown_move_cnt;
     al_draw_bitmap(Obj->spine_upsidedown_img, Obj->spine_upsidedown_x, Obj->spine_upsidedown_y, 0);
@@ -224,6 +241,26 @@ void level2_destroy(Scene* self) {
         if (ele && ele->Destroy) {
             ele->Destroy(ele);
         }
+    }
+    if (Obj->restart_btn){
+        for (int i = 0; i < 2; i++) {
+            if (Obj->restart_btn->img[i]) {
+                al_destroy_bitmap(Obj->restart_btn->img[i]);
+                Obj->restart_btn->img[i] = NULL;
+            }
+        }
+        free(Obj->restart_btn);
+        Obj->restart_btn = NULL;
+    }
+    if (Obj->back_btn){
+        for (int i = 0; i < 2; i++) {
+            if (Obj->back_btn->img[i]) {
+                al_destroy_bitmap(Obj->back_btn->img[i]);
+                Obj->back_btn->img[i] = NULL;
+            }
+        }
+        free(Obj->back_btn);
+        Obj->back_btn = NULL;
     }
     // free the scene objects
     free(Obj);

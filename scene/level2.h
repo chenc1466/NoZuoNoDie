@@ -28,6 +28,7 @@ typedef struct _Level2
     ALLEGRO_BITMAP *gear3_img;
     ALLEGRO_BITMAP *platform_img_set;
     Button *back_btn;
+    Button *restart_btn;
     int door_cnt;
     int door_move_cnt;
     int platform_move;
