@@ -29,6 +29,7 @@ Elements *New_Character(int label)
     pDerivedObj->img[0] = al_load_bitmap("assets/image/player.png");
     pDerivedObj->img[1] = al_load_bitmap("assets/image/jump.png");
     pDerivedObj->img[2] = al_load_bitmap("assets/image/dead.png");
+    pDerivedObj->img[3] = al_load_bitmap("assets/image/bomb.png");
     pDerivedObj->width = 64;
     pDerivedObj->height = 112;
     pDerivedObj->chara_cnt = 0;
@@ -97,21 +98,25 @@ Elements *New_Character(int label)
         }
         case 3: {
 
-            int temp[10][4] = {
-                {0, 480, 208, 240},
+            int temp[14][4] = {
+                {0, 480, 224, 240},
                 {336, 480, 432, 240},
                 {992, 480, 656, 240},
                 {1760, 480, 288, 240},
                 {2240, 480, 320, 240},
                 {1968, 448, 80, 32},
+                {768, 720, 224, 32},
+                {2048, 720, 192, 32},
                 {848, 192, 48, 32},
                 {720, 336, 208, 64},
                 {928, 112, 208, 80},
-                {2096, 384, 112, 48}
+                {2096, 384, 112, 48},
+                {224, 480, 112, 32},
+                {1648, 480, 112, 32}
             };
-            platform_cnt = 17;
-            wall_cnt = 6;
-            initial_y = 720;
+            platform_cnt = 15;
+            wall_cnt = 8;
+            initial_y = 864;
             limit_x = 2560;
             memcpy(platform_check, temp, sizeof(temp));
             break;
@@ -204,16 +209,10 @@ void Character_update(Elements *self)
     // 處理跳躍 & 重力
     chara->velocity_y += chara->gravity;
     chara->y += chara->velocity_y;
-
-
-    if(platform_state == 0){
-        cnt_cnt = 0;
-    }
-    if(platform_state == 1){
-        cnt_cnt++;
-    }
-
+    platform_check[12][1] = canyon1_y;
+    platform_check[13][1] = canyon2_y;
     for (int i = 0; i < platform_cnt; i++) {
+        printf(" %d \n", canyon1_y);
         int px = platform_check[i][0];  // 平台 x
         int py = platform_check[i][1];  // 平台 y
         int pw = platform_check[i][2];  // 平台寬度
@@ -281,8 +280,20 @@ void Character_draw(Elements *self)
     }
 
     else if(chara->state == DEAD){
-        al_draw_bitmap(chara->img[2], chara->x - camera_x, chara->y - camera_y, 1);
-        dead_cnt = 2;
+        if(dead_type == 4){
+            al_draw_bitmap_region(chara->img[3], 64 * (bomb_cnt/20), 0, 64, 112, chara->x - camera_x, chara->y - camera_y, 1);
+        }
+        else{
+            al_draw_bitmap(chara->img[2], chara->x - camera_x, chara->y - camera_y, 1);
+        }
+        
+        if(dead_type == 4 && bomb_cnt >= 80){
+            dead_cnt = 2;
+        }
+        else if(dead_type != 4){
+            dead_cnt = 2;
+        }
+
     }
 
 }
@@ -294,6 +305,7 @@ void Character_destory(Elements *self)
     al_destroy_bitmap(Obj->img[0]);
     al_destroy_bitmap(Obj->img[1]);
     al_destroy_bitmap(Obj->img[2]);
+    al_destroy_bitmap(Obj->img[3]);
     free(Obj->hitbox);
     free(Obj);
     free(self);

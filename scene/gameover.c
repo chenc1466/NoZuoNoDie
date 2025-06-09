@@ -10,12 +10,18 @@ Scene *New_Gameover(int label)
     Gameover *pDerivedObj = (Gameover *)malloc(sizeof(Gameover));
     Scene *pObj = New_Scene(label);
     // Background
-    printf("ff %d\n", dead_type);
+    //printf("ff %d\n", dead_type);
     if(dead_type == 1){
         pDerivedObj->background = al_load_bitmap("assets/image/gameover1.png");
     }
     else if(dead_type == 2){
         pDerivedObj->background = al_load_bitmap("assets/image/gameover2.png");
+    }
+    else if(dead_type == 3){
+        pDerivedObj->background = al_load_bitmap("assets/image/gameover3.png");
+    }
+    else if(dead_type == 4){
+        pDerivedObj->background = al_load_bitmap("assets/image/gameover4.jpg");
     }
 
     pObj->pDerivedObj = pDerivedObj;

@@ -35,6 +35,7 @@ extern int now_bgm;
 extern double now_vol;
 extern int now_ctr;
 extern int dead_cnt;
+extern int bomb_cnt;
 extern int dead_type;
 extern int level_state;
 extern int character_total_state;
@@ -43,6 +44,8 @@ extern int level_state;
 extern int camera_x;
 extern int camera_y;
 extern int finish_level;
+extern int canyon1_y;
+extern int canyon2_y;
 bool isColliding(int x1, int y1, int w1, int h1,
                  int x2, int y2, int w2, int h2);
 #endif

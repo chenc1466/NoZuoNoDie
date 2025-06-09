@@ -21,6 +21,7 @@ Point mouse;
 bool debug_mode = true;
 int now_ctr = -1;
 int dead_cnt = 0;
+int bomb_cnt = 0;
 int dead_type = 0;
 int level_state = 1;
 int platform_state = 0;
@@ -28,6 +29,8 @@ int character_total_state = 1;
 int camera_x = 0;
 int camera_y = 0;
 int finish_level = 0;
+int canyon1_y = 0;
+int canyon2_y = 0;
 bool isColliding(int x1, int y1, int w1, int h1,
                  int x2, int y2, int w2, int h2) {
 

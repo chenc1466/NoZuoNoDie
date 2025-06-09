@@ -44,6 +44,7 @@ Scene* New_Level3(int label) {
     pDerivedObj->button1_state = 0;
     pDerivedObj->button2_state = 0;
     pDerivedObj->button3_state = 0;
+    bomb_cnt = 0;
     //canyon
     pDerivedObj->canyon1_img = al_load_bitmap("assets/image/canyon.png");
     pDerivedObj->canyon2_img = al_load_bitmap("assets/image/canyon.png");
@@ -59,7 +60,7 @@ Scene* New_Level3(int label) {
     pDerivedObj->restart_btn->img[1] = al_load_bitmap("assets/image/rst_btn_1.png");
     // 初始化相機
     init_camera(&pDerivedObj->camera, 1280, 720);
-
+    canyon1_y = 480;
     pObj->pDerivedObj = pDerivedObj;
     // register character
     character_total_state = 3;
@@ -92,6 +93,9 @@ void level3_update(Scene* self) {
             Obj->spine_move_cnt++;
         else 
             Obj->spine_state = 2;
+    }
+    if(dead_cnt == 1 && dead_type == 4){
+        bomb_cnt++;
     }
 
     ElementVec allEle = _Get_all_elements(self);
@@ -129,15 +133,15 @@ void level3_update(Scene* self) {
                 dead_cnt = 1;
                 dead_type = 1;
             }
-            if(dead_cnt == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, 224, 688, 32, 16))
+            if(dead_cnt == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, 224, 704, 96, 64))
             {
                 dead_cnt = 1;
-                dead_type = 1;
+                dead_type = 3;
             }
-            if(dead_cnt == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, 1648, 688, 32, 16))
+            if(dead_cnt == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, 1648, 704, 32, 64))
             {
                 dead_cnt = 1;
-                dead_type = 1;
+                dead_type = 3;
             }
             if(Obj->spine_state == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, 2048, 224, 32, 16)){
                 Obj->spine_state = 1;
@@ -147,11 +151,10 @@ void level3_update(Scene* self) {
                 dead_type = 1;
             }
             // button1
-            if(isColliding(chara->x, chara->y, chara->width, chara->height, 1088, 80, 32, 32)){
+            if(dead_cnt == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, 1104, 80, 16, 32)){
                 Obj->button1_state = 1;
-            }
-            else{
-                Obj->button1_state = 0;
+                dead_cnt = 1;
+                dead_type = 4;
             }
             // button2
             if(isColliding(chara->x, chara->y, chara->width, chara->height, 1024, 448, 32, 32)){
@@ -162,11 +165,10 @@ void level3_update(Scene* self) {
                 Obj->button2_state = 0;
             }
             // button3
-            if(isColliding(chara->x, chara->y, chara->width, chara->height, 1808, 448, 32, 32)){
+            if(dead_cnt == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, 1824, 448, 8, 32)){
                 Obj->button3_state = 1;
-            }
-            else{
-                Obj->button3_state = 0;
+                dead_cnt = 1;
+                dead_type = 4;
             }
             // door
             if(Obj->door_state == 1 && isColliding(chara->x, chara->y, chara->width, chara->height, 1296, 384, 96, 96))
@@ -205,22 +207,25 @@ void level3_update(Scene* self) {
                 }
             }
             //canyon1
-            if(isColliding(chara->x, chara->y, chara->width, chara->height, 208, 448, 32, 32)) {
+            if(isColliding(chara->x, chara->y, chara->width, chara->height, 208, 464, 32, 32)) {
                 // Start platform movement when character lands
+                canyon1_y = 720;
                 if(Obj->canyon1_state == 0) {
                     Obj->canyon1_state = 1;
                 }
             }
+
             //canyon2
             if(isColliding(chara->x, chara->y, chara->width, chara->height, 1632, 448, 32, 32)) {
                 // Start platform movement when character lands
+                canyon2_y = 720;
                 if(Obj->canyon2_state == 0) {
                     Obj->canyon2_state = 1;
                 }
             }
 
             if(dead_cnt == 2){
-                printf("dead\n");
+                //printf("dead\n");
                 dead_cnt = 0;
                 self->scene_end = true;
                 window = 4;
@@ -244,34 +249,34 @@ void level3_draw(Scene* self) {
                          0, 0, 2560, 720,  // 源圖片的完整大小
                          -Obj->camera.x, -Obj->camera.y, 2560, 720,  // 目標位置和大小，加上相機偏移
                          0);
-
+    
     // draw button1
     if(Obj->button1_state == 0){
-        al_draw_bitmap(Obj->button1_img, 1088 - Obj->camera.x, 80 - Obj->camera.y, 0);
+        al_draw_bitmap(Obj->button1_img, 1072 - Obj->camera.x, 80 - Obj->camera.y, 0);
     }
     else{
-        al_draw_bitmap(Obj->button1_pressed_img, 1088 - Obj->camera.x, 96 - Obj->camera.y, 0);
+        al_draw_bitmap(Obj->button1_pressed_img, 1072 - Obj->camera.x, 96 - Obj->camera.y, 0);
     }
     // draw button2
     if(Obj->button2_state == 0){
-        al_draw_bitmap(Obj->button2_img, 1024 - Obj->camera.x, 448 - Obj->camera.y, 0);
+        al_draw_bitmap(Obj->button2_img, 1008 - Obj->camera.x, 448 - Obj->camera.y, 0);
     }
     else{
-        al_draw_bitmap(Obj->button2_pressed_img, 1024 - Obj->camera.x, 464 - Obj->camera.y, 0);
+        al_draw_bitmap(Obj->button2_pressed_img, 1008 - Obj->camera.x, 464 - Obj->camera.y, 0);
     }
     // draw button3
     if(Obj->button3_state == 0){
-        al_draw_bitmap(Obj->button3_img, 1808 - Obj->camera.x, 448 - Obj->camera.y, 0);
+        al_draw_bitmap(Obj->button3_img, 1792 - Obj->camera.x, 448 - Obj->camera.y, 0);
     }
     else{
-        al_draw_bitmap(Obj->button3_pressed_img, 1808 - Obj->camera.x, 464 - Obj->camera.y, 0);
+        al_draw_bitmap(Obj->button3_pressed_img, 1792 - Obj->camera.x, 464 - Obj->camera.y, 0);
     }
 
     // draw spine
     al_draw_bitmap(Obj->spine1_img, 768 - Obj->camera.x, 688 - Obj->camera.y, 0);
     al_draw_bitmap(Obj->spine2_img, 2048 - Obj->camera.x, 688 - Obj->camera.y, 0);
-    al_draw_bitmap(Obj->spine4_img, 224 - Obj->camera.x, 688 - Obj->camera.y, 0);
-    al_draw_bitmap(Obj->spine5_img, 1648 - Obj->camera.x, 688 - Obj->camera.y, 0);
+    al_draw_bitmap(Obj->spine4_img, 224 - Obj->camera.x, 720 - Obj->camera.y, 0);
+    al_draw_bitmap(Obj->spine5_img, 1648 - Obj->camera.x, 720 - Obj->camera.y, 0);
     // draw spine
     double spine_x = Obj->spine_x - Obj->camera.x;
     double spine_y = Obj->spine_y - Obj->camera.y - sin((double)Obj->spine_move_cnt/80 * 3.1415926) * 160;
