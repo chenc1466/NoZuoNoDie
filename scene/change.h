@@ -18,7 +18,7 @@ typedef struct _Change
     Button *back_btn;
 
 } Change;
-Scene* New_change(int label);
+Scene* New_Change(int label);
 void Change_update(Scene *self);
 void Change_draw(Scene *self);
 void Change_destroy(Scene *self);

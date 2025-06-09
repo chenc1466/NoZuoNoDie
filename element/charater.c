@@ -237,7 +237,6 @@ void Character_update(Elements *self)
     platform_check[12][1] = canyon1_y;
     platform_check[13][1] = canyon2_y;
     for (int i = 0; i < platform_cnt; i++) {
-        printf(" %d \n", canyon1_y);
         int px = platform_check[i][0];  // 平台 x
         int py = platform_check[i][1];  // 平台 y
         int pw = platform_check[i][2];  // 平台寬度

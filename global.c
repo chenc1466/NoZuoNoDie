@@ -32,6 +32,8 @@ int finish_level = 0;
 int canyon1_y = 0;
 int canyon2_y = 0;
 int current_character = 0;
+FILE *fptr;
+char account[2][100];
 bool isColliding(int x1, int y1, int w1, int h1,
                  int x2, int y2, int w2, int h2) {
 

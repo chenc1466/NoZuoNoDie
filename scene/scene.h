@@ -15,7 +15,8 @@ typedef enum SceneType
     Gameover_L,
     Victory_L,
     Level2_L,
-    Level3_L
+    Level3_L,
+    NameInput_L
 } SceneType;
 typedef enum EleType
 {

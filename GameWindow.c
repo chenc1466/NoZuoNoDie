@@ -114,6 +114,7 @@ void game_init(Game *self)
     GAME_ASSERT(self->display, "failed to create display.");
     // Create first scene
     create_scene(Menu_L);
+
     // create event queue
     event_queue = al_create_event_queue();
     GAME_ASSERT(event_queue, "failed to create event queue.");
@@ -170,6 +171,9 @@ bool game_update(Game *self)
             break;
         case 8:
             create_scene(Change_L);
+            break;
+        case 9:
+            create_scene(NameInput_L);
             break;
         case -1:
             return false;

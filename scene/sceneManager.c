@@ -9,7 +9,7 @@
 #include "level2.h"
 #include "level3.h"
 #include "change.h"
-
+#include "name_input.h"
 Scene *scene = NULL;
 void create_scene(SceneType type)
 {
@@ -44,6 +44,9 @@ void create_scene(SceneType type)
         break;
     case Change_L:
         scene = New_Change(Change_L);
+        break;
+    case NameInput_L:
+        scene = New_NameInput(NameInput_L);
         break;
     default:
         break;

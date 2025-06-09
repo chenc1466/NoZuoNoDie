@@ -24,7 +24,11 @@ Scene *New_Menu(int label)
     pDerivedObj->info_btn = New_Button(1117, 557, 0, 0, 90, 1);
     pDerivedObj->info_btn->img[0] = al_load_bitmap("assets/image/info_btn_0.png");
     pDerivedObj->info_btn->img[1] = al_load_bitmap("assets/image/info_btn_1.png");
-
+    fptr = fopen("account.txt", "r"); // Opens "filename.txt" in read mode
+    if (fptr == NULL) {
+        printf("Error opening file.\n");
+    }
+    fclose(fptr);
     pObj->pDerivedObj = pDerivedObj;
     // setting derived object function
     pObj->Update = menu_update;
@@ -43,7 +47,7 @@ void menu_update(Scene *self)
     if (Obj->new_btn->isPress)
     {
         self->scene_end = true;
-        window = 8;
+        window = 9;
     }
     
     return;

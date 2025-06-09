@@ -241,6 +241,22 @@ void level1_destroy(Scene* self) {
                 Obj->back_btn->img[i] = NULL;
             }
         }
+        fptr = fopen("account.txt", "w");
+        char myString[100];
+        fgets(myString, 100, fptr);
+        myString[0] = 'l';
+        myString[1] = 'e';
+        myString[2] = 'v';
+        myString[3] = 'e';
+        myString[4] = 'l';
+        myString[5] = '1';
+        strcpy(account[1], myString);
+        for(int i = 0; i < 2; i++){
+            fprintf(fptr, "%s ", account[i]);
+        }
+        fprintf(fptr, "\n");
+        printf("%s\n", myString);
+        fclose(fptr);
         free(Obj->back_btn);
         Obj->back_btn = NULL;
     }
