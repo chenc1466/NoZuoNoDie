@@ -26,6 +26,8 @@ typedef struct _Level3
     ALLEGRO_BITMAP *spine1_img;
     ALLEGRO_BITMAP *spine2_img;
     ALLEGRO_BITMAP *spine3_img;
+    ALLEGRO_BITMAP *spine4_img;
+    ALLEGRO_BITMAP *spine5_img;
     int spine_state;
     int spine_move_cnt;
     int spine_x;
@@ -45,6 +47,10 @@ typedef struct _Level3
     int door_cnt;
     int door_state;
     int door_move_cnt;
+    ALLEGRO_BITMAP *canyon1_img;
+    ALLEGRO_BITMAP *canyon2_img;
+    int canyon1_state;
+    int canyon2_state;
     Camera camera;
 
 } Level3;

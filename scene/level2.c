@@ -145,7 +145,7 @@ void level2_update(Scene* self) {
                 dead_type = 2;
             }
             //transform
-            if(isColliding(chara->x, chara->y, chara->width, chara->height, 1024, 96, 96, 32)){
+            if(isColliding(chara->x, chara->y, chara->width, chara->height, 1200, 96, 96, 32)){
                 chara->x = 0;
                 chara->y = 0;
             }
@@ -206,7 +206,7 @@ void level2_draw(Scene* self) {
     // draw portal
     if(Obj->portal_appear == 1){
         al_draw_bitmap(Obj->portal1_img, 16, 32, 0);
-        al_draw_bitmap(Obj->portal2_img, 1024, 96, 0);
+        al_draw_bitmap(Obj->portal2_img, 1200, 96, 0);
     }
 
     // back button

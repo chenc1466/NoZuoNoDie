@@ -28,6 +28,8 @@ Scene* New_Level3(int label) {
     pDerivedObj->spine1_img = al_load_bitmap("assets/image/spine2.png");
     pDerivedObj->spine2_img = al_load_bitmap("assets/image/spine3.png");
     pDerivedObj->spine3_img = al_load_bitmap("assets/image/spine4.png");
+    pDerivedObj->spine4_img = al_load_bitmap("assets/image/spine4.png");
+    pDerivedObj->spine5_img = al_load_bitmap("assets/image/spine4.png");
     pDerivedObj->spine_state = 0;
     pDerivedObj->spine_move_cnt = 0;
     pDerivedObj->spine_x = 2096;
@@ -42,6 +44,11 @@ Scene* New_Level3(int label) {
     pDerivedObj->button1_state = 0;
     pDerivedObj->button2_state = 0;
     pDerivedObj->button3_state = 0;
+    //canyon
+    pDerivedObj->canyon1_img = al_load_bitmap("assets/image/canyon.png");
+    pDerivedObj->canyon2_img = al_load_bitmap("assets/image/canyon.png");
+    pDerivedObj->canyon1_state = 0;
+    pDerivedObj->canyon2_state = 0;
     //bck_btn
     pDerivedObj->back_btn = New_Button(21, 21, 100, 100, 0, 0);
     pDerivedObj->back_btn->img[0] = al_load_bitmap("assets/image/back_btn_0.png");
@@ -122,6 +129,16 @@ void level3_update(Scene* self) {
                 dead_cnt = 1;
                 dead_type = 1;
             }
+            if(dead_cnt == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, 224, 688, 32, 16))
+            {
+                dead_cnt = 1;
+                dead_type = 1;
+            }
+            if(dead_cnt == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, 1648, 688, 32, 16))
+            {
+                dead_cnt = 1;
+                dead_type = 1;
+            }
             if(Obj->spine_state == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, 2048, 224, 32, 16)){
                 Obj->spine_state = 1;
             }
@@ -171,7 +188,7 @@ void level3_update(Scene* self) {
             {
                 Obj->door_cnt--;
             }
-            printf("%d\n", chara->y);
+            //printf("%d\n", chara->y);
             //platform
             if(isColliding(chara->x, chara->y, chara->width, chara->height, 880, 208, 32, 32)) {
                 // Character is on platform
@@ -182,15 +199,28 @@ void level3_update(Scene* self) {
                     platform_state = 1;
                 }
             }
-            
             if(platform_state == 1){
                 if(!isColliding(chara->x, chara->y, chara->width, chara->height, 816, 16, 96, 128)){
                     platform_state = 0;
                 }
             }
-            
+            //canyon1
+            if(isColliding(chara->x, chara->y, chara->width, chara->height, 208, 448, 32, 32)) {
+                // Start platform movement when character lands
+                if(Obj->canyon1_state == 0) {
+                    Obj->canyon1_state = 1;
+                }
+            }
+            //canyon2
+            if(isColliding(chara->x, chara->y, chara->width, chara->height, 1632, 448, 32, 32)) {
+                // Start platform movement when character lands
+                if(Obj->canyon2_state == 0) {
+                    Obj->canyon2_state = 1;
+                }
+            }
+
             if(dead_cnt == 2){
-                //printf("dead\n");
+                printf("dead\n");
                 dead_cnt = 0;
                 self->scene_end = true;
                 window = 4;
@@ -240,6 +270,8 @@ void level3_draw(Scene* self) {
     // draw spine
     al_draw_bitmap(Obj->spine1_img, 768 - Obj->camera.x, 688 - Obj->camera.y, 0);
     al_draw_bitmap(Obj->spine2_img, 2048 - Obj->camera.x, 688 - Obj->camera.y, 0);
+    al_draw_bitmap(Obj->spine4_img, 224 - Obj->camera.x, 688 - Obj->camera.y, 0);
+    al_draw_bitmap(Obj->spine5_img, 1648 - Obj->camera.x, 688 - Obj->camera.y, 0);
     // draw spine
     double spine_x = Obj->spine_x - Obj->camera.x;
     double spine_y = Obj->spine_y - Obj->camera.y - sin((double)Obj->spine_move_cnt/80 * 3.1415926) * 160;
@@ -273,7 +305,20 @@ void level3_draw(Scene* self) {
     if(platform_state == 1){
         al_draw_bitmap_region(Obj->platform_img_set, 384, 0, 96, 160, 832 - Obj->camera.x, 192 - Obj->camera.y, 0);
     }
-    
+    // draw canyon1
+    if(Obj->canyon1_state == 0){
+        al_draw_bitmap_region(Obj->canyon1_img, 0, 0, 112, 240, 224 - Obj->camera.x, 480 - Obj->camera.y, 0);
+    }
+    else if(Obj->canyon1_state == 1){
+        al_draw_bitmap_region(Obj->canyon1_img, 112, 0, 112, 240, 224 - Obj->camera.x, 480 - Obj->camera.y, 0);
+    }
+    // draw canyon2
+    if(Obj->canyon2_state == 0){
+        al_draw_bitmap_region(Obj->canyon2_img, 0, 0, 112, 240, 1648 - Obj->camera.x, 480 - Obj->camera.y, 0);
+    }
+    else if(Obj->canyon2_state == 1){
+        al_draw_bitmap_region(Obj->canyon2_img, 112, 0, 112, 240, 1648 - Obj->camera.x, 480 - Obj->camera.y, 0);
+    }
     // 使用相機偏移繪製角色
     /*
     ElementVec allEle = _Get_all_elements(self);
@@ -305,6 +350,8 @@ void level3_destroy(Scene* self) {
     al_destroy_bitmap(Obj->spine1_img);
     al_destroy_bitmap(Obj->spine2_img);
     al_destroy_bitmap(Obj->spine3_img);
+    al_destroy_bitmap(Obj->spine4_img);
+    al_destroy_bitmap(Obj->spine5_img);
     al_destroy_bitmap(Obj->button1_img);
     al_destroy_bitmap(Obj->button1_pressed_img);
     al_destroy_bitmap(Obj->button2_img);

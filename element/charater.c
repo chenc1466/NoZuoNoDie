@@ -97,9 +97,11 @@ Elements *New_Character(int label)
         }
         case 3: {
 
-            int temp[7][4] = {
-                {0, 480, 768, 240},
-                {996, 480, 1056, 240},
+            int temp[10][4] = {
+                {0, 480, 208, 240},
+                {336, 480, 432, 240},
+                {992, 480, 656, 240},
+                {1760, 480, 288, 240},
                 {2240, 480, 320, 240},
                 {1968, 448, 80, 32},
                 {848, 192, 48, 32},
@@ -108,7 +110,7 @@ Elements *New_Character(int label)
                 {2096, 384, 112, 48}
             };
             platform_cnt = 17;
-            wall_cnt = 4;
+            wall_cnt = 6;
             initial_y = 720;
             limit_x = 2560;
             memcpy(platform_check, temp, sizeof(temp));
