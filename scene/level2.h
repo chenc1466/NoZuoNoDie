@@ -23,6 +23,8 @@ typedef struct _Level2
     ALLEGRO_BITMAP *tile_img;
     ALLEGRO_BITMAP *door_img_set;
     ALLEGRO_BITMAP *spine_upsidedown_img;
+    ALLEGRO_BITMAP *portal1_img;
+    ALLEGRO_BITMAP *portal2_img;
     ALLEGRO_BITMAP *gear1_img;
     ALLEGRO_BITMAP *gear2_img;
     ALLEGRO_BITMAP *gear3_img;
@@ -44,6 +46,7 @@ typedef struct _Level2
     int gear2_y;
     int gear3_x;
     int gear3_y;
+    int portal_appear;
     double gear_angle;
     
     // Platform properties

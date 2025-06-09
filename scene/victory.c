@@ -42,6 +42,7 @@ void victory_update(Scene *self)
     }
     if (Obj->restart_btn->isPress)
     {
+        printf("level_state: %d\n", level_state);
         if(level_state == 1){
             self->scene_end = true;
             window = 2;

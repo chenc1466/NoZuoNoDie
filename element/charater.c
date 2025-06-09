@@ -97,28 +97,19 @@ Elements *New_Character(int label)
         }
         case 3: {
 
-            int temp[17][4] = {
+            int temp[7][4] = {
+                {0, 480, 768, 240},
+                {996, 480, 1056, 240},
+                {2240, 480, 320, 240},
                 {1968, 448, 80, 32},
-                {224, 480, 112, 240},
-                {384, 480, 48, 16},
-                {1216, 480, 48, 16},
-                {1088, 80, 32 , 32},
-                {1024, 448, 32, 32},
-                {1808, 448, 32, 32},
-                {528, 448, 80, 32},
-                {2096, 384, 112, 48},
+                {848, 192, 48, 32},
                 {720, 336, 208, 64},
                 {928, 112, 208, 80},
-                {2096, 384, 112, 48},
-                {768, 480, 224, 240},
-                {2048, 480, 192, 240},
-                {816, 80, 112, 256},
-                {1408, 368, 112, 112},
-                {2464, 384, 96, 96}
+                {2096, 384, 112, 48}
             };
             platform_cnt = 17;
-            wall_cnt = 1;
-            initial_y = 480;
+            wall_cnt = 4;
+            initial_y = 720;
             limit_x = 2560;
             memcpy(platform_check, temp, sizeof(temp));
             break;
@@ -266,8 +257,8 @@ void Character_draw(Elements *self)
 {
     Character *chara = ((Character *)(self->pDerivedObj));
 
-    printf("chara->x: %d, chara->y: %d ", chara->x, chara->y);
-    printf("camera_x: %d, camera_y: %d\n", camera_x, camera_y);
+    // printf("chara->x: %d, chara->y: %d ", chara->x, chara->y);
+    // printf("camera_x: %d, camera_y: %d\n", camera_x, camera_y);
     
     if (chara->state == STOP){
         if(chara->change == 0){
@@ -288,9 +279,8 @@ void Character_draw(Elements *self)
     }
 
     else if(chara->state == DEAD){
-        al_draw_bitmap(chara->img[2], chara->x, chara->y, 1);
+        al_draw_bitmap(chara->img[2], chara->x - camera_x, chara->y - camera_y, 1);
         dead_cnt = 2;
-
     }
 
 }

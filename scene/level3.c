@@ -16,10 +16,32 @@
 //#define TILE_SIZE 16
 
 Scene* New_Level3(int label) {
+    level_state = 3;
     Level3* pDerivedObj = (Level3*)malloc(sizeof(Level3));
     Scene* pObj = New_Scene(label);
     pDerivedObj->background = al_load_bitmap("assets/image/lv3.png");
     pDerivedObj->door_img_set = al_load_bitmap("assets/image/door.png");
+    pDerivedObj->platform_img_set = al_load_bitmap("assets/image/pfm.jpg");
+    pDerivedObj->door_cnt = 0;
+    pDerivedObj->door_state = 0;
+    //spine
+    pDerivedObj->spine1_img = al_load_bitmap("assets/image/spine2.png");
+    pDerivedObj->spine2_img = al_load_bitmap("assets/image/spine3.png");
+    pDerivedObj->spine3_img = al_load_bitmap("assets/image/spine4.png");
+    pDerivedObj->spine_state = 0;
+    pDerivedObj->spine_move_cnt = 0;
+    pDerivedObj->spine_x = 2096;
+    pDerivedObj->spine_y = 384;
+    //button
+    pDerivedObj->button1_img = al_load_bitmap("assets/image/button0.png");
+    pDerivedObj->button1_pressed_img = al_load_bitmap("assets/image/button1.png");
+    pDerivedObj->button2_img = al_load_bitmap("assets/image/button0.png");
+    pDerivedObj->button2_pressed_img = al_load_bitmap("assets/image/button1.png");
+    pDerivedObj->button3_img = al_load_bitmap("assets/image/button0.png");
+    pDerivedObj->button3_pressed_img = al_load_bitmap("assets/image/button1.png");
+    pDerivedObj->button1_state = 0;
+    pDerivedObj->button2_state = 0;
+    pDerivedObj->button3_state = 0;
     //bck_btn
     pDerivedObj->back_btn = New_Button(21, 21, 100, 100, 0, 0);
     pDerivedObj->back_btn->img[0] = al_load_bitmap("assets/image/back_btn_0.png");
@@ -44,14 +66,25 @@ Scene* New_Level3(int label) {
 
 void level3_update(Scene* self) {
     Level3* Obj = ((Level3*)(self->pDerivedObj));
-    if(Obj->door_state == 1)
+    // back button
+    Button_Update(Obj->back_btn);
+    if (Obj->back_btn->isPress)
     {
-        Obj->door_move_cnt++;
-        if(Obj->door_move_cnt < 80)
-            Obj->door_move_cnt++;
-        else {
-            Obj->door_state = 2;
-        }
+        self->scene_end = true;
+        window = 1;
+    }
+    // restart button
+    Button_Update(Obj->restart_btn);
+    if (Obj->restart_btn->isPress)
+    {
+        self->scene_end = true;
+        window = 7;
+    }
+   if(Obj->spine_state == 1){
+        if(Obj->spine_move_cnt < 80)
+            Obj->spine_move_cnt++;
+        else 
+            Obj->spine_state = 2;
     }
 
     ElementVec allEle = _Get_all_elements(self);
@@ -77,26 +110,90 @@ void level3_update(Scene* self) {
             Obj->camera.y = target_y;
             camera_x = Obj->camera.x;
             camera_y = Obj->camera.y;
+
+            // spine
+            if(dead_cnt == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, 768, 688, 224, 32))
+            {
+                dead_cnt = 1;
+                dead_type = 1;
+            }
+            if(dead_cnt == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, 2048, 688, 192, 32))
+            {
+                dead_cnt = 1;
+                dead_type = 1;
+            }
+            if(Obj->spine_state == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, 2048, 224, 32, 16)){
+                Obj->spine_state = 1;
+            }
+            if(Obj->spine_state == 1 && isColliding(chara->x, chara->y, chara->width, chara->height, Obj->spine_x, Obj->spine_y - 16, 112, 160)){
+                dead_cnt = 1;   
+                dead_type = 1;
+            }
+            // button1
+            if(isColliding(chara->x, chara->y, chara->width, chara->height, 1088, 80, 32, 32)){
+                Obj->button1_state = 1;
+            }
+            else{
+                Obj->button1_state = 0;
+            }
+            // button2
+            if(isColliding(chara->x, chara->y, chara->width, chara->height, 1024, 448, 32, 32)){
+                Obj->button2_state = 1;
+                Obj->door_state = 1;
+            }
+            else{
+                Obj->button2_state = 0;
+            }
+            // button3
+            if(isColliding(chara->x, chara->y, chara->width, chara->height, 1808, 448, 32, 32)){
+                Obj->button3_state = 1;
+            }
+            else{
+                Obj->button3_state = 0;
+            }
+            // door
+            if(Obj->door_state == 1 && isColliding(chara->x, chara->y, chara->width, chara->height, 1296, 384, 96, 96))
+            {
+                Obj->door_state = 2;
+            }
+            if(Obj->door_state == 2 && isColliding(chara->x, chara->y, chara->width, chara->height, 2464, 384, 96, 96))
+            {
+                if(Obj->door_cnt < 80){
+                    Obj->door_cnt++;
+                }
+                else if(Obj->door_cnt == 80){
+                    level_state = 3;
+                    self->scene_end = true;
+                    window = 5;
+                }
+            }
+            else if(Obj->door_cnt > 0)
+            {
+                Obj->door_cnt--;
+            }
+            printf("%d\n", chara->y);
+            //platform
+            if(isColliding(chara->x, chara->y, chara->width, chara->height, 880, 208, 32, 32)) {
+                // Character is on platform
+                chara->y = 80;
+
+                // Start platform movement when character lands
+                if(platform_state == 0) {
+                    platform_state = 1;
+                }
+            }
+            
+            if(platform_state == 1){
+                if(!isColliding(chara->x, chara->y, chara->width, chara->height, 816, 16, 96, 128)){
+                    platform_state = 0;
+                }
+            }
             
             if(dead_cnt == 2){
+                //printf("dead\n");
                 dead_cnt = 0;
                 self->scene_end = true;
                 window = 4;
-            }
-        }
-    }
-    // run interact for every element
-    for (int i = 0; i < allEle.len; i++)
-    {
-        Elements *ele = allEle.arr[i];
-        // run every interact object
-        for (int j = 0; j < ele->inter_len; j++)
-        {
-            int inter_label = ele->inter_obj[j];
-            ElementVec labelEle = _Get_label_elements(self, inter_label);
-            for (int i = 0; i < labelEle.len; i++)
-            {
-                ele->Interact(ele, labelEle.arr[i]);
             }
         }
     }
@@ -106,20 +203,6 @@ void level3_update(Scene* self) {
         Elements *ele = allEle.arr[i];
         if (ele->dele)
             _Remove_elements(self, ele);
-    }
-    // back button
-    Button_Update(Obj->back_btn);
-    if (Obj->back_btn->isPress)
-    {
-        self->scene_end = true;
-        window = 1;
-    }
-    // restart button
-    Button_Update(Obj->restart_btn);
-    if (Obj->restart_btn->isPress)
-    {
-        self->scene_end = true;
-        window = 7;
     }
 }
 
@@ -132,19 +215,65 @@ void level3_draw(Scene* self) {
                          -Obj->camera.x, -Obj->camera.y, 2560, 720,  // 目標位置和大小，加上相機偏移
                          0);
 
+    // draw button1
+    if(Obj->button1_state == 0){
+        al_draw_bitmap(Obj->button1_img, 1088 - Obj->camera.x, 80 - Obj->camera.y, 0);
+    }
+    else{
+        al_draw_bitmap(Obj->button1_pressed_img, 1088 - Obj->camera.x, 96 - Obj->camera.y, 0);
+    }
+    // draw button2
+    if(Obj->button2_state == 0){
+        al_draw_bitmap(Obj->button2_img, 1024 - Obj->camera.x, 448 - Obj->camera.y, 0);
+    }
+    else{
+        al_draw_bitmap(Obj->button2_pressed_img, 1024 - Obj->camera.x, 464 - Obj->camera.y, 0);
+    }
+    // draw button3
+    if(Obj->button3_state == 0){
+        al_draw_bitmap(Obj->button3_img, 1808 - Obj->camera.x, 448 - Obj->camera.y, 0);
+    }
+    else{
+        al_draw_bitmap(Obj->button3_pressed_img, 1808 - Obj->camera.x, 464 - Obj->camera.y, 0);
+    }
+
+    // draw spine
+    al_draw_bitmap(Obj->spine1_img, 768 - Obj->camera.x, 688 - Obj->camera.y, 0);
+    al_draw_bitmap(Obj->spine2_img, 2048 - Obj->camera.x, 688 - Obj->camera.y, 0);
+    // draw spine
+    double spine_x = Obj->spine_x - Obj->camera.x;
+    double spine_y = Obj->spine_y - Obj->camera.y - sin((double)Obj->spine_move_cnt/80 * 3.1415926) * 160;
+    al_draw_bitmap(Obj->spine3_img, spine_x, spine_y, 0);
     // back button
     Draw_Button(Obj->back_btn);
     // restart button
     Draw_Button(Obj->restart_btn);
     
-    // 使用相機偏移繪製門
-    double door_x = 1168 + (256-1168) * ((double)Obj->door_move_cnt/80);
-    double door_y = 544 + (192-544) * ((double)Obj->door_move_cnt/80);
-    al_draw_bitmap_region(Obj->door_img_set, 
-                         96 * (int)(Obj->door_cnt/20), 0, 96, 96, 
-                         door_x - Obj->camera.x, 
-                         door_y - Obj->camera.y, 0);
-
+    // 使用相機偏移繪製門 2560,384 -> 1296,384 -> 2464,384
+    if(Obj->door_state == 0){
+        al_draw_bitmap_region(Obj->door_img_set, 
+                            0, 0, 96, 96, 
+                            2560 - Obj->camera.x, 
+                            384 - Obj->camera.y, 0);
+    }
+    else if(Obj->door_state == 1){
+        al_draw_bitmap_region(Obj->door_img_set, 
+                            0, 0, 96, 96, 
+                            1296 - Obj->camera.x, 
+                            384 - Obj->camera.y, 0);
+    }
+    else if(Obj->door_state == 2){
+        al_draw_bitmap_region(Obj->door_img_set, 
+                            96 * (int)(Obj->door_cnt/20), 0, 96, 96, 
+                            2464 - Obj->camera.x, 
+                            384 - Obj->camera.y, 0);
+    }
+    // draw platform
+    al_draw_bitmap_region(Obj->platform_img_set, 0, 0, 96, 256, 832 - Obj->camera.x, 144 - Obj->camera.y, 0);
+    if(platform_state == 1){
+        al_draw_bitmap_region(Obj->platform_img_set, 384, 0, 96, 160, 832 - Obj->camera.x, 192 - Obj->camera.y, 0);
+    }
+    
     // 使用相機偏移繪製角色
     /*
     ElementVec allEle = _Get_all_elements(self);

@@ -27,6 +27,10 @@ Scene* New_Level2(int label) {
     pDerivedObj->spine_upsidedown_y = 384;
     pDerivedObj->spine_upsidedown_state = 0;
     pDerivedObj->spine_upsidedown_move_cnt = 0;
+    //portal
+    pDerivedObj->portal1_img = al_load_bitmap("assets/image/portal.png");
+    pDerivedObj->portal2_img = al_load_bitmap("assets/image/portal.png");
+    pDerivedObj->portal_appear = 0;
     //gear
     pDerivedObj->gear1_img = al_load_bitmap("assets/image/gear.png");
     pDerivedObj->gear2_img = al_load_bitmap("assets/image/gear.png");
@@ -117,6 +121,7 @@ void level2_update(Scene* self) {
             //spine
             if(Obj->spine_upsidedown_state == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, 784, 640, 32, 16)){
                 Obj->spine_upsidedown_state = 1;
+                Obj->portal_appear = 1;
             }
             else if(Obj->spine_upsidedown_state == 2 && isColliding(chara->x, chara->y, chara->width, chara->height, 752, 640, 128, 32)){
                 dead_cnt = 1;  
@@ -124,16 +129,18 @@ void level2_update(Scene* self) {
                 Obj->spine_upsidedown_state = 3;  
             }
             //gear
-            
-            if(dead_cnt == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, Obj->gear1_x, Obj->gear1_y, 112, 112)){
+            if(dead_cnt == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, Obj->gear1_x, Obj->gear1_y + 16, 112, 112)
+                             && isColliding(chara->x, chara->y, chara->width, chara->height, Obj->gear1_x + 16, Obj->gear1_y, 80, 112)){
                 dead_cnt = 1;  
                 dead_type = 2;              
             }
-            if(dead_cnt == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, Obj->gear2_x, Obj->gear2_y, 112, 112)){
+            if(dead_cnt == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, Obj->gear2_x, Obj->gear2_y + 16, 112, 112)
+                             && isColliding(chara->x, chara->y, chara->width, chara->height, Obj->gear2_x + 16, Obj->gear2_y, 80, 112)){
                 dead_cnt = 1;
                 dead_type = 2;
             }
-            if(dead_cnt == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, Obj->gear3_x, Obj->gear3_y, 112, 112)){
+            if(dead_cnt == 0 && isColliding(chara->x, chara->y, chara->width, chara->height, Obj->gear3_x, Obj->gear3_y + 16, 112, 112)
+                             && isColliding(chara->x, chara->y, chara->width, chara->height, Obj->gear3_x + 16, Obj->gear3_y, 80, 112)){
                 dead_cnt = 1;
                 dead_type = 2;
             }
@@ -195,6 +202,12 @@ void level2_draw(Scene* self) {
 
     // draw door
     al_draw_bitmap_region(Obj->door_img_set, 96 * (int)(Obj->door_cnt/20), 0, 96, 96, 0, 576, 0);
+
+    // draw portal
+    if(Obj->portal_appear == 1){
+        al_draw_bitmap(Obj->portal1_img, 16, 32, 0);
+        al_draw_bitmap(Obj->portal2_img, 1024, 96, 0);
+    }
 
     // back button
     Draw_Button(Obj->back_btn);
