@@ -162,7 +162,7 @@ void level3_update(Scene* self) {
                     Obj->door_cnt++;
                 }
                 else if(Obj->door_cnt == 80){
-                    level_state = 3;
+                    finish_level = 2;
                     self->scene_end = true;
                     window = 5;
                 }
@@ -300,6 +300,27 @@ void level3_destroy(Scene* self) {
     Level3* Obj = ((Level3*)(self->pDerivedObj));
     al_destroy_bitmap(Obj->background);
     al_destroy_bitmap(Obj->tile_img);
+    al_destroy_bitmap(Obj->door_img_set);
+    al_destroy_bitmap(Obj->platform_img_set);
+    al_destroy_bitmap(Obj->spine1_img);
+    al_destroy_bitmap(Obj->spine2_img);
+    al_destroy_bitmap(Obj->spine3_img);
+    al_destroy_bitmap(Obj->button1_img);
+    al_destroy_bitmap(Obj->button1_pressed_img);
+    al_destroy_bitmap(Obj->button2_img);
+    al_destroy_bitmap(Obj->button2_pressed_img);
+    al_destroy_bitmap(Obj->button3_img);
+    al_destroy_bitmap(Obj->button3_pressed_img);
+    for(int i = 0; i < 2; i++) {
+        if (Obj->back_btn->img[i]) {
+            al_destroy_bitmap(Obj->back_btn->img[i]);
+            Obj->back_btn->img[i] = NULL;
+        }
+        if (Obj->restart_btn->img[i]) {
+            al_destroy_bitmap(Obj->restart_btn->img[i]);
+            Obj->restart_btn->img[i] = NULL;
+        }
+    }
      // Destroy all elements
     ElementVec allEle = _Get_all_elements(self);
     for (int i = 0; i < allEle.len; i++) {

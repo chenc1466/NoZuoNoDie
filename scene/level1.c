@@ -113,9 +113,10 @@ void level1_update(Scene* self) {
                     Obj->door_cnt++;
                 }
                 else if(Obj->door_cnt == 80){
-                    level_state = 2;
+                    finish_level = 1;
                     self->scene_end = true;
                     window = 5;
+                    
                 }
             }
             else if(Obj->door_cnt > 0)
@@ -205,6 +206,16 @@ void level1_destroy(Scene* self) {
     al_destroy_bitmap(Obj->door_img_set);
     al_destroy_bitmap(Obj->spine_img);
     al_destroy_bitmap(Obj->spine_upsidedown_img);
+    for(int i = 0; i < 2; i++) {
+        if (Obj->back_btn->img[i]) {
+            al_destroy_bitmap(Obj->back_btn->img[i]);
+            Obj->back_btn->img[i] = NULL;
+        }
+        if (Obj->restart_btn->img[i]) {
+            al_destroy_bitmap(Obj->restart_btn->img[i]);
+            Obj->restart_btn->img[i] = NULL;
+        }
+    }
      // Destroy all elements
     ElementVec allEle = _Get_all_elements(self);
     for (int i = 0; i < allEle.len; i++) {
