@@ -11,6 +11,8 @@ ALLEGRO_EVENT_QUEUE *event_queue = NULL;
 ALLEGRO_EVENT event;
 ALLEGRO_SAMPLE *song;
 ALLEGRO_SAMPLE_INSTANCE *sample_instance;
+ALLEGRO_SAMPLE *jump_sound = NULL;
+
 int now_bgm = 0;
 double now_vol = 0.5;
 ALLEGRO_TIMER *fps = NULL;
@@ -28,12 +30,14 @@ int platform_state = 0;
 int character_total_state = 1;
 int camera_x = 0;
 int camera_y = 0;
-int finish_level = 0;
+int finish_level = 1;
 int canyon1_y = 0;
 int canyon2_y = 0;
 int current_character = 0;
+int read_save = 0;
 FILE *fptr;
 char account[2][100];
+int name_state = 0;
 bool isColliding(int x1, int y1, int w1, int h1,
                  int x2, int y2, int w2, int h2) {
 

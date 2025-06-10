@@ -51,7 +51,7 @@ void execute(Game *self)
         case ALLEGRO_EVENT_KEY_DOWN:
         {
             key_state[event.keyboard.keycode] = true;
-            if(now_ctr != -1){
+            if(now_ctr != -1 && name_state == 0){
                 for(int i = 0; i < 3; i++){
                     if(key_used[i] == event.keyboard.keycode){
                         now_ctr = -1;
@@ -60,6 +60,10 @@ void execute(Game *self)
                 }
                 key_used[now_ctr] = event.keyboard.keycode;
                 now_ctr = -1;
+            }
+            else if(name_state == 1){
+                name_state = 0;
+
             }
             break;
         }
@@ -174,6 +178,18 @@ bool game_update(Game *self)
             break;
         case 9:
             create_scene(NameInput_L);
+            break;
+        case 10:
+            create_scene(Leaderboard_L);
+            break;
+        case 11:
+            create_scene(Info1_L);
+            break;
+        case 12:
+            create_scene(Info2_L);
+            break;
+        case 13:
+            create_scene(Info3_L);
             break;
         case -1:
             return false;

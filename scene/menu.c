@@ -46,8 +46,27 @@ void menu_update(Scene *self)
 
     if (Obj->new_btn->isPress)
     {
+        if(read_save == 0){
+            self->scene_end = true;
+            window = 9;
+        }
+        else{
+            self->scene_end = true;
+            window = 1;
+        }
+
+    }
+    if (Obj->save_btn->isPress)
+    {
+        
         self->scene_end = true;
-        window = 9;
+        window = 10;
+    }
+    if (Obj->info_btn->isPress)
+    {
+        
+        self->scene_end = true;
+        window = 11;
     }
     
     return;

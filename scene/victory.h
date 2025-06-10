@@ -13,6 +13,9 @@ typedef struct _Victory
     ALLEGRO_BITMAP *background;
     Button *back_btn;
     Button *restart_btn;
+    ALLEGRO_SAMPLE *victory_sound;
+    ALLEGRO_SAMPLE_INSTANCE *victory_instance;
+    bool victory_sound_played;
 } Victory;
 Scene *New_Victory(int label);
 void victory_update(Scene *self);

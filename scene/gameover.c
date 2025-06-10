@@ -1,4 +1,5 @@
 #include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_audio.h>
 #include "gameover.h"
 #include <stdbool.h>
 #include "../global.h"
@@ -36,6 +37,20 @@ Scene *New_Gameover(int label)
     pDerivedObj->restart_btn->img[0] = al_load_bitmap("assets/image/restart_btn_00.png");
     pDerivedObj->restart_btn->img[1] = al_load_bitmap("assets/image/restart_btn_01.png");
 
+        // gameover Sound
+    pDerivedObj->gameover_sound = al_load_sample("assets/sound/roar.wav");
+    if(sample_instance){
+        al_stop_sample_instance(sample_instance);
+    }
+    if(pDerivedObj->gameover_sound){
+        pDerivedObj->gameover_instance = al_create_sample_instance(pDerivedObj->gameover_sound);
+        al_attach_sample_instance_to_mixer(pDerivedObj->gameover_instance, al_get_default_mixer());
+        al_play_sample_instance(pDerivedObj->gameover_instance);
+        pDerivedObj->gameover_instance = pDerivedObj->gameover_instance;
+        pDerivedObj->gameover_sound_played = true;
+    }
+
+
     pObj->Update = gameover_update;
     pObj->Draw = gameover_draw;
     pObj->Destroy = gameover_destroy;
@@ -67,6 +82,14 @@ void gameover_update(Scene *self)
         }
     }
     return;
+    if(Obj->gameover_sound_played && Obj->gameover_instance){
+        if(!al_get_sample_instance_playing(Obj->gameover_instance)){
+            al_destroy_sample_instance(sample_instance);
+            Obj->gameover_instance = NULL;
+            al_destroy_sample_instance(Obj->gameover_instance);
+            Obj->gameover_sound_played = false;
+        }
+    }
 }
 void gameover_draw(Scene *self)
 {

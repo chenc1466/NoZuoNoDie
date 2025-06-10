@@ -120,7 +120,10 @@ void level2_update(Scene* self) {
                     Obj->door_cnt++;
                 }
                 else if(Obj->door_cnt == 80){
-                    finish_level = 2;
+                    if((finish_level <= 2)){
+                       finish_level = 3; 
+                    }
+
                     self->scene_end = true;
                     window = 5;
                 }

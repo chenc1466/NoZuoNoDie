@@ -10,6 +10,10 @@
 #include "level3.h"
 #include "change.h"
 #include "name_input.h"
+#include "leaderboard.h"
+#include "info1.h"
+#include "info2.h"
+#include "info3.h"
 Scene *scene = NULL;
 void create_scene(SceneType type)
 {
@@ -47,6 +51,18 @@ void create_scene(SceneType type)
         break;
     case NameInput_L:
         scene = New_NameInput(NameInput_L);
+        break;
+    case Leaderboard_L:
+        scene = New_Leaderboard(Leaderboard_L);
+        break;
+    case Info1_L:
+        scene = New_Info1(Info1_L);
+        break;
+    case Info2_L:
+        scene = New_Info2(Info2_L);
+        break;
+    case Info3_L:
+        scene = New_Info3(Info3_L);
         break;
     default:
         break;

@@ -22,7 +22,6 @@ Scene *New_NameInput(int label)
     pDerivedObj->ctr_btn[0] = New_Button(WIDTH / 2 - 100, 450, 300, 50,  0, 0);
     pDerivedObj->ctr_btn[0]->img[0] = al_load_bitmap("assets/image/ctr_btn_0.png");
     pDerivedObj->ctr_btn[0]->img[1] = al_load_bitmap("assets/image/ctr_btn_1.png");
-    pDerivedObj->ctr_btn[0]->img[2] = al_load_bitmap("assets/image/ctr_btn_2.png");
     pDerivedObj->button_now = 0;
     fptr = fopen("account.txt", "r"); // Opens "filename.txt" in read mode
     if (fptr == NULL) {
@@ -44,7 +43,8 @@ void name_input_update(Scene *self)
     al_get_keyboard_state(&keyboard_state);
 
     if(Obj->ctr_btn[0]->isPress){
-        now_ctr = 0;
+        name_state = 1;
+        now_ctr = -1;
         Obj->button_now = 1;
     }
 

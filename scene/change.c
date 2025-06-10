@@ -54,21 +54,25 @@ void Change_update(Scene *self)
 
     if (Obj->black_btn->isPress) {
         current_character = 0;
+
         self->scene_end = true;
         window = 1; 
     }
     if (Obj->green_btn->isPress) {
         current_character = 1;
+
         self->scene_end = true;
         window = 1; 
     }
     if (Obj->blue_btn->isPress) {
         current_character = 2;
+
         self->scene_end = true;
         window = 1;
     }
     if (Obj->yellow_btn->isPress) {
         current_character = 3;
+
         self->scene_end = true;
         window = 1; 
     }

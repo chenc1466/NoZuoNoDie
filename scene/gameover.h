@@ -13,6 +13,9 @@ typedef struct _Gameover
     ALLEGRO_BITMAP *background;
     Button *back_btn;
     Button *restart_btn;
+    ALLEGRO_SAMPLE *gameover_sound;
+    ALLEGRO_SAMPLE_INSTANCE *gameover_instance;
+    bool gameover_sound_played;   
 } Gameover;
 Scene *New_Gameover(int label);
 void gameover_update(Scene *self);

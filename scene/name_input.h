@@ -14,7 +14,7 @@ typedef struct _NameInput
     Button *new_btn;
     Button *save_btn;
     Button *info_btn;
-    Button *ctr_btn[3];
+    Button *ctr_btn[4];
     ALLEGRO_FONT *font;
     ALLEGRO_FONT *title_font;
     char name[20];  // 存儲用戶輸入的名字

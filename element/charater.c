@@ -8,6 +8,8 @@
 #include "../scene/level3.h"
 #include <stdio.h>
 #include <stdbool.h>
+#include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_primitives.h>
 
 // Global variable for death state
 extern int dead_cnt;
@@ -62,10 +64,8 @@ Elements *New_Character(int label)
     pDerivedObj->move_step = 0;
 
     // load attack sound
-    ALLEGRO_SAMPLE *sample = al_load_sample("assets/sound/atk_sound.wav");
-    pDerivedObj->atk_Sound = al_create_sample_instance(sample);
-    al_set_sample_instance_playmode(pDerivedObj->atk_Sound, ALLEGRO_PLAYMODE_ONCE);
-    al_attach_sample_instance_to_mixer(pDerivedObj->atk_Sound, al_get_default_mixer());
+    pDerivedObj->jump_sound = al_load_sample("assets/sound/jump.wav");
+
 
     // init position and hitbox
     pDerivedObj->x = 0;
@@ -176,6 +176,13 @@ void Character_update(Elements *self)
             chara->velocity_y = chara->jump_force;
             chara->is_jumping = true;
             chara->change = 1;
+                        if(chara->jump_sound){
+                chara->jump_instance = al_create_sample_instance(chara->jump_sound);
+                al_attach_sample_instance_to_mixer(chara->jump_instance, al_get_default_mixer());
+                al_play_sample_instance(chara->jump_instance);
+                chara->jump_instance = chara->jump_instance;
+
+            }
         }
 
         if (key_state[key_used[0]] || key_state[ALLEGRO_KEY_A]) // left
@@ -205,6 +212,13 @@ void Character_update(Elements *self)
             chara->velocity_y = chara->jump_force;
             chara->is_jumping = true;
             chara->state = MOVE;
+            if(chara->jump_sound){
+                chara->jump_instance = al_create_sample_instance(chara->jump_sound);
+                al_attach_sample_instance_to_mixer(chara->jump_instance, al_get_default_mixer());
+                al_play_sample_instance(chara->jump_instance);
+                chara->jump_instance = chara->jump_instance;
+
+            }
         }
 
         if (key_state[key_used[0]] || key_state[ALLEGRO_KEY_A]) // left
@@ -335,11 +349,14 @@ void Character_draw(Elements *self)
 void Character_destory(Elements *self)
 {
     Character *Obj = ((Character *)(self->pDerivedObj));
-    al_destroy_sample_instance(Obj->atk_Sound);
     al_destroy_bitmap(Obj->img[0]);
     al_destroy_bitmap(Obj->img[1]);
     al_destroy_bitmap(Obj->img[2]);
     al_destroy_bitmap(Obj->img[3]);
+    if(Obj->jump_sound){
+        al_destroy_sample(Obj->jump_sound);
+        Obj->jump_sound = NULL;
+    }
     free(Obj->hitbox);
     free(Obj);
     free(self);

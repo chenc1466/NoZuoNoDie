@@ -36,7 +36,7 @@ typedef struct _Character
     int total_state;                // know level
     int state;                      // the state of character
     ALLEGRO_BITMAP *img[5]; // gif for each state. 0: stop, 1: move, 2:dead, 3:bomb, 4:transport
-    ALLEGRO_SAMPLE_INSTANCE *atk_Sound;
+
     int anime;      // counting the time of animation
     int anime_time; // indicate how long the animation
     bool new_proj;
@@ -45,6 +45,9 @@ typedef struct _Character
     float gravity;         // 重力加速度
     float jump_force;      // 跳躍力度
     bool is_jumping;       // 是否正在跳躍
+    ALLEGRO_SAMPLE *jump_sound;
+    ALLEGRO_SAMPLE_INSTANCE *jump_instance;
+    
     int chara_cnt;
     int change; 
     int move_step;

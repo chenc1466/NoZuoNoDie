@@ -1,4 +1,5 @@
 #include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_audio.h>
 #include "victory.h"
 #include "../global.h"
 #include <stdbool.h>
@@ -25,6 +26,19 @@ Scene *New_Victory(int label)
     pDerivedObj->restart_btn->img[0] = al_load_bitmap("assets/image/restart_btn_00.png");
     pDerivedObj->restart_btn->img[1] = al_load_bitmap("assets/image/restart_btn_01.png");
 
+    // Victory Sound
+    pDerivedObj->victory_sound = al_load_sample("assets/sound/cheer.wav");
+    if(sample_instance){
+        al_stop_sample_instance(sample_instance);
+    }
+    if(pDerivedObj->victory_sound){
+        pDerivedObj->victory_instance = al_create_sample_instance(pDerivedObj->victory_sound);
+        al_attach_sample_instance_to_mixer(pDerivedObj->victory_instance, al_get_default_mixer());
+        al_play_sample_instance(pDerivedObj->victory_instance);
+        pDerivedObj->victory_instance = pDerivedObj->victory_instance;
+        pDerivedObj->victory_sound_played = true;
+    }
+
     pObj->Update = victory_update;
     pObj->Draw = victory_draw;
     pObj->Destroy = victory_destroy;
@@ -50,6 +64,14 @@ void victory_update(Scene *self)
         else if(level_state == 2){
             self->scene_end = true;
             window = 6;
+        }
+    }
+        if(Obj->victory_sound_played && Obj->victory_instance){
+        if(!al_get_sample_instance_playing(Obj->victory_instance)){
+            al_destroy_sample_instance(sample_instance);
+            Obj->victory_instance = NULL;
+            al_destroy_sample_instance(Obj->victory_instance);
+            Obj->victory_sound_played = false;
         }
     }
     return;
